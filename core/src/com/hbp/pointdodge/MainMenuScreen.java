@@ -3,6 +3,7 @@ package com.hbp.pointdodge;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,16 +30,21 @@ public class MainMenuScreen implements Screen {
 	
 	private Preferences prefs;
 	
-	private Rectangle CAMPAIGN_r;
-	private Texture CAMPAIGN_t;
+	private Rectangle TUTORIAL_r;
+	private Texture TUTORIAL_t;
+	
+	private Rectangle CAMPAIGN_I_r;
+	private Texture CAMPAIGN_I_t;
+	
+	private Rectangle CAMPAIGN_II_r;
+	private Texture CAMPAIGN_II_t;
+	
 	
 	private Rectangle LEVELS_r;
 	private Texture LEVELS_t;
 	
-	private Rectangle LIBRARY_r;
-	private Texture LIBRARY_t;
-	
 	private Texture TRIM_t;
+	private Texture SQUARETRIM_t;
 	
 	private Texture contact_t;
 	
@@ -73,7 +79,13 @@ public class MainMenuScreen implements Screen {
 	
 	private ScreenViewport viewport;
 	
+	private int ylocus;
+	private int xlocus;
+	
 	public MainMenuScreen(final PointDodge gam, int minespeed, boolean android, boolean play_the_sound) {
+		
+		ylocus=1;
+		xlocus=0;
 		
 		wastouched=false;
 		
@@ -120,42 +132,36 @@ public class MainMenuScreen implements Screen {
 		
 		
 		
+		TUTORIAL_r = new Rectangle();
+		TUTORIAL_r.x=60;
+		TUTORIAL_r.y=300;
+		TUTORIAL_r.height=60;
+		TUTORIAL_r.width=200;
+		TUTORIAL_t = new Texture(Gdx.files.internal("abutton_long_tutorial.png"));
 		
+		CAMPAIGN_I_r = new Rectangle();
+		CAMPAIGN_I_r.x=60;
+		CAMPAIGN_I_r.y=220;
+		CAMPAIGN_I_r.height=60;
+		CAMPAIGN_I_r.width=200;
+		CAMPAIGN_I_t = new Texture(Gdx.files.internal("abutton_long_campaign_I.png"));
 		
-		CAMPAIGN_r = new Rectangle();
-		CAMPAIGN_r.x=60;
-		CAMPAIGN_r.y=260;
-		CAMPAIGN_r.height=60;
-		CAMPAIGN_r.width=200;
-		CAMPAIGN_t = new Texture(Gdx.files.internal("abutton_long_campaign.png"));
+		CAMPAIGN_II_r = new Rectangle();
+		CAMPAIGN_II_r.x=60;
+		CAMPAIGN_II_r.y=140;
+		CAMPAIGN_II_r.height=60;
+		CAMPAIGN_II_r.width=200;
+		CAMPAIGN_II_t = new Texture(Gdx.files.internal("abutton_long_campaign_II.png"));
 		
-		if (!ANDROID){
-		
-			LIBRARY_r = new Rectangle();
-			LIBRARY_r.x=60;
-			LIBRARY_r.y=160;
-			LIBRARY_r.height=60;
-			LIBRARY_r.width=200;
-			LIBRARY_t = new Texture(Gdx.files.internal("abutton_long_library.png"));
-			
-			
-			LEVELS_r = new Rectangle();
-			LEVELS_r.x=60;
-			LEVELS_r.y=60;
-			LEVELS_r.height=60;
-			LEVELS_r.width=200;
-			LEVELS_t = new Texture(Gdx.files.internal("abutton_long_freeplay.png"));
-		}
-		else{
-			LEVELS_r = new Rectangle();
-			LEVELS_r.x=60;
-			LEVELS_r.y=160;
-			LEVELS_r.height=60;
-			LEVELS_r.width=200;
-			LEVELS_t = new Texture(Gdx.files.internal("abutton_long_freeplay.png"));
-		}
+		LEVELS_r = new Rectangle();
+		LEVELS_r.x=60;
+		LEVELS_r.y=60;
+		LEVELS_r.height=60;
+		LEVELS_r.width=200;
+		LEVELS_t = new Texture(Gdx.files.internal("abutton_long_freeplay.png"));
 
 		TRIM_t = new Texture(Gdx.files.internal("abutton_long_trim.png"));
+		SQUARETRIM_t = new Texture(Gdx.files.internal("fb_trim.png"));
 		
 		contact_t=new Texture(Gdx.files.internal("contact_block.png"));
 		
@@ -189,6 +195,12 @@ public class MainMenuScreen implements Screen {
 		
 		//Gdx.graphics.setWindowedMode(320, 480);
 		
+		if (Gdx.input.isKeyJustPressed(Keys.DOWN)){ylocus=(ylocus+1+5)%5;}
+		if (Gdx.input.isKeyJustPressed(Keys.UP)){ylocus=(ylocus-1+5)%5;}
+		
+		if (Gdx.input.isKeyJustPressed(Keys.RIGHT)){xlocus=(xlocus+1+2)%2;}
+		if (Gdx.input.isKeyJustPressed(Keys.LEFT)){xlocus=(xlocus-1+2)%2;}
+		
 		if (!ANDROID){Gdx.graphics.setWindowedMode(320, 480);}
 		
 		camera.update();
@@ -203,29 +215,51 @@ public class MainMenuScreen implements Screen {
 		game.batch.begin();
 		
 	    font.setColor(Color.BLACK);
-		
-		game.batch.draw(CAMPAIGN_t, CAMPAIGN_r.x, CAMPAIGN_r.y);
+	    game.batch.draw(TUTORIAL_t, TUTORIAL_r.x, TUTORIAL_r.y);
+		game.batch.draw(CAMPAIGN_I_t, CAMPAIGN_I_r.x, CAMPAIGN_I_r.y);
+		game.batch.draw(CAMPAIGN_II_t, CAMPAIGN_II_r.x, CAMPAIGN_II_r.y);
 		game.batch.draw(LEVELS_t, LEVELS_r.x, LEVELS_r.y);
-		if (!ANDROID){
-			game.batch.draw(LIBRARY_t, LIBRARY_r.x, LIBRARY_r.y);
-		}
 		
-		if (CAMPAIGN_r.contains(tp_x,tp_y)){
-			game.batch.draw(TRIM_t, CAMPAIGN_r.x, CAMPAIGN_r.y);
-		}
-		
-		if (LEVELS_r.contains(tp_x,tp_y)){
-			game.batch.draw(TRIM_t, LEVELS_r.x, LEVELS_r.y);
-		}
-		if (!ANDROID){
-			if (LIBRARY_r.contains(tp_x,tp_y)){
-				game.batch.draw(TRIM_t, LIBRARY_r.x, LIBRARY_r.y);
-			}
-		}
 		game.batch.draw(selector_t, selector_r.x, selector_r.y);
 		game.batch.draw(prv_t, selector_prv_r.x, selector_prv_r.y);
 		game.batch.draw(nxt_t, selector_nxt_r.x, selector_nxt_r.y);
 		font.draw(game.batch, ""+MINESPEED, selector_r.x+60, selector_r.y+25);
+		
+		if (TUTORIAL_r.contains(tp_x,tp_y)){
+			ylocus=1;
+		}
+		
+		if (CAMPAIGN_I_r.contains(tp_x,tp_y)){
+			ylocus=2;
+		}
+		
+		if (CAMPAIGN_II_r.contains(tp_x,tp_y)){
+			ylocus=3;
+		}
+		
+		if (LEVELS_r.contains(tp_x,tp_y)){
+			ylocus=4;
+		}
+		
+		if (ylocus==1){
+			game.batch.draw(TRIM_t, TUTORIAL_r.x, TUTORIAL_r.y);
+		}
+		if (ylocus==2){
+			game.batch.draw(TRIM_t, CAMPAIGN_I_r.x, CAMPAIGN_I_r.y);
+		}
+		if (ylocus==3){
+			game.batch.draw(TRIM_t, CAMPAIGN_II_r.x, CAMPAIGN_II_r.y);
+		}
+		if (ylocus==4){
+			game.batch.draw(TRIM_t, LEVELS_r.x, LEVELS_r.y);
+		}
+		if (ylocus==0 && xlocus==0){
+			game.batch.draw(SQUARETRIM_t, selector_prv_r.x, selector_prv_r.y);
+		}
+		if (ylocus==0 && xlocus==1){
+			game.batch.draw(SQUARETRIM_t, selector_nxt_r.x, selector_nxt_r.y);
+		}
+		
 		
 		game.batch.draw(contact_t, selector_r.x+160, selector_r.y+20);
 		
@@ -234,29 +268,34 @@ public class MainMenuScreen implements Screen {
 		//tp_x=Gdx.input.getX();
 		//tp_y=Gdx.input.getY();
 		
-		if ((!ANDROID&&Gdx.input.justTouched())||(ANDROID&&wastouched&&!Gdx.input.isTouched())) {
+		if ((!ANDROID&&(Gdx.input.justTouched()||Gdx.input.isKeyJustPressed(Keys.SPACE)))||(ANDROID&&wastouched&&!Gdx.input.isTouched())) {
 			
-			if (!are_instructions_visible){
-				if (selector_prv_r.contains(tp_x, tp_y) && MINESPEED>50){
+				if (ylocus==0 && xlocus==0 && MINESPEED>100){
 					MINESPEED-=5;
 					arrowsound.play();
 				}
-				if (selector_nxt_r.contains(tp_x, tp_y) && MINESPEED<200){
+				if (ylocus==0 && xlocus==1 && MINESPEED<400){
 					MINESPEED+=5;
 					arrowsound.play();
 				}
 				
-				if (CAMPAIGN_r.contains(tp_x,tp_y)){
-					//game.setScreen(new GameScreen_2(game, MINESPEED, prefs.getString("TOPIC"), prefs.getString("MODE"), false, true, ANDROID));
-					//game.setScreen(new GameScreen_2(game, MINESPEED, "NONE", "intro", false, true));
-					//NOTE THE PROBLEM IS THAT I'M NOT USING ".equals()" IN GS2
+				if (ylocus==1){
+					game.setScreen(new GameScreen_2(game, MINESPEED, "NONE", "tutorial" , "endless", ANDROID));
+		            dispose();
 				}
 				
-				if (LEVELS_r.contains(tp_x,tp_y)){
+				if (ylocus==2){
+					
+				}
+
+				if (ylocus==3){
+					
+				}
+				
+				if (ylocus==4){
 		            game.setScreen(new LevelSelectScreen(game, "NONE", MINESPEED,  false, ANDROID));
 		            dispose();
 				}
-			}
 		}
 		
 		wastouched=false;
@@ -308,11 +347,12 @@ public class MainMenuScreen implements Screen {
 		
 		prv_t.dispose();	
 		
-		CAMPAIGN_t.dispose();
-
+		CAMPAIGN_I_t.dispose();
+		CAMPAIGN_II_t.dispose();
+		
+		
 		LEVELS_t.dispose();
 		
-		if(!ANDROID){LIBRARY_t.dispose();}
 		
 		TRIM_t.dispose();
 		
