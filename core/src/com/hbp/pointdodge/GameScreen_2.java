@@ -15,16 +15,21 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.*;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.utils.Array;
 //import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.Preferences;
+import com.hbp.pointdodge.Kaboom;
 import com.hbp.pointdodge.Dot;
 
 
@@ -33,7 +38,9 @@ public class GameScreen_2 implements Screen {
 	final PointDodge game;
 	OrthographicCamera camera;
 	private Texture pod_t;
+	private TextureRegion pod_tr;
 	private Rectangle pod_r;
+	private Polygon pod_poly;
 	private float pod_x;
 	private float pod_y;
 	private float pod_ydot;
@@ -52,6 +59,8 @@ public class GameScreen_2 implements Screen {
 	private float effective_delta;
 	
 	private Array<Dot> dots;
+	private Array<Kaboom> explosions;
+	
 	private Texture dot_t_r;
 	private Texture dot_t_n;
 	private Texture dot_t_p;
@@ -61,12 +70,20 @@ public class GameScreen_2 implements Screen {
 	private Texture dot_t_t;
 	private Texture dot_t_c;
 	
+	private Texture explosion_t;
+	
 	private SpriteBatch batch;
 	
 	private float total_time;
 	private int seconds;
 	
+	private float[] pp_input;
+	
 	private int UNIT_LENGTH_IN_PIXELS;
+	
+	private int SHIP_DISPLACEMENT_IN_PIXELS;
+	
+	private boolean HAVE_WE_EXPLODED;
 	
    public GameScreen_2(final PointDodge gam, int gamespeed, String topic, String level, String mode, boolean android) {
 	   
@@ -77,6 +94,7 @@ public class GameScreen_2 implements Screen {
 	 this.game = gam;
       
 	 dots=new Array<Dot>();
+	 explosions = new Array<Kaboom>();
 	 
 	 dot_t_n=new Texture(Gdx.files.internal("sniperdot.png"));
 	 
@@ -88,7 +106,7 @@ public class GameScreen_2 implements Screen {
 	 dot_t_c=new Texture(Gdx.files.internal("dots/dot_cyan.png"));
 	 dot_t_p=new Texture(Gdx.files.internal("dots/dot_purple.png"));
 	 
-	 
+	 explosion_t = new Texture(Gdx.files.internal("explosion.png"));
 	 
 	 pod_x=0;
 	 pod_y=0;
@@ -98,11 +116,17 @@ public class GameScreen_2 implements Screen {
 	 pod_ydot=0;
 		
 	pod_t= new Texture(Gdx.files.internal("base_dodger.png"));
+	pod_tr= new TextureRegion(pod_t);
+	
 	pod_r= new Rectangle();
 	pod_r.width=40;
 	pod_r.height=40;
 	pod_r.x=pod_x*80+160-20;
 	pod_r.y=pod_y*80+320-20;
+	
+	
+	pp_input=new float[]{pod_r.x, pod_r.y, pod_r.x+pod_r.width, pod_r.y, pod_r.x+pod_r.width, pod_r.y+pod_r.height, pod_r.x, pod_r.y+pod_r.height};
+	pod_poly= new Polygon(pp_input);
 	
 	camera = new OrthographicCamera();
 	camera.setToOrtho(false, 320, 480);
@@ -113,9 +137,70 @@ public class GameScreen_2 implements Screen {
     seconds=0;
     
     UNIT_LENGTH_IN_PIXELS=80;
+    
+    HAVE_WE_EXPLODED=false;
+    
    }
    
    //---FUNCTIONS---
+   
+   //--Collisions between geometric shapes. Why is this not already part of libgdx?
+   
+   private boolean Rectangle_collides_with_Polygon(Rectangle rec, Polygon pol) {
+	   float[] rp_input=new float[]{rec.x, rec.y, rec.x+rec.width, rec.y, rec.x+rec.width, rec.y+rec.height, rec.x, rec.y+rec.height};
+	   Polygon recpol=new Polygon(rp_input);
+	   //System.out.println(recpol.getVertices()[0]+", "+recpol.getVertices()[1]);
+	   //System.out.println(recpol.getVertices()[2]+", "+recpol.getVertices()[3]);
+	   //System.out.println(recpol.getVertices()[4]+", "+recpol.getVertices()[5]);
+	   //System.out.println(recpol.getVertices()[6]+", "+recpol.getVertices()[7]);
+	   //System.out.println("WAAAAAAAAA");
+	   return Intersector.overlapConvexPolygons(pol, recpol);
+   }
+   
+   private boolean Circle_contains_Rectangle(Circle cir, Rectangle rec) {
+	   float[] verts= new float[]{rec.x, rec.y, rec.x+rec.width, rec.y, rec.x+rec.width, rec.y+rec.height, rec.x, rec.y+rec.height};
+	   if (cir.contains(verts[0], verts[1]) && cir.contains(verts[2], verts[3]) && cir.contains(verts[4], verts[5]) && cir.contains(verts[6], verts[7])){
+		   return true;
+	   }
+	   else{
+		   return false;
+	   }
+   }
+   
+   private boolean Circle_intersects_Rectangle(Circle cir, Rectangle rec){
+	   if (Intersector.overlaps(cir, rec) && !Circle_contains_Rectangle(cir, rec)){
+		   return true;
+	   }
+	   else{
+		   return false;
+	   }
+   }
+   
+   private boolean Circle_contains_Polygon(Circle cir, Polygon pol){
+	   float[] verts= pol.getVertices();
+	   int vlen=verts.length;
+	   int vplace=0;
+	   while (vplace<vlen){
+		   if (!cir.contains(verts[vplace], verts[vplace+1])){
+			   return false;
+		   }
+		   vplace+=2;
+	   }
+	   return true;
+   }
+   
+   //----
+   
+   private void spawnExplosion(float X, float Y){
+	   Kaboom boom = new Kaboom();
+	   boom.rect= new Rectangle();
+	   boom.birthtime=total_time;
+	   boom.rect.x= X;
+	   boom.rect.y= Y;
+	   explosions.add(boom);
+   }
+   
+   //----
    
    private void spawnTutorialDot(float xposn, float yposn) {
 	      Dot dot = new Dot();
@@ -194,16 +279,28 @@ public class GameScreen_2 implements Screen {
 	   camera.update();
 	   
 	   batch.begin();
-	   batch.draw(pod_t, pod_r.x-10, pod_r.y-10);
+	   //batch.draw(pod_t, pod_r.x-10, pod_r.y-10);
 	   for(Dot dot: dots) {
 		   if (dot.colour=="yellow"){
-			   batch.draw(dot_t_y, dot.rect.x-6, dot.rect.y-6);
+			   batch.draw(dot_t_y, dot.rect.x, dot.rect.y);
 		   }
 		   else{
-			   batch.draw(dot_t_n, dot.rect.x-6, dot.rect.y-6);
+			   batch.draw(dot_t_n, dot.rect.x, dot.rect.y);
 			   //System.out.println("DEFO GOT THIS FAR");
 		   }
 	   }
+	   
+	   
+	   if (HAVE_WE_EXPLODED){
+		   for(Kaboom boom: explosions) {
+			   batch.draw(explosion_t, boom.rect.x-20, boom.rect.y-20);
+		   }
+	   }
+	   else{
+		   batch.draw(pod_tr, pod_r.x-10, pod_r.y-10, 30, 30, 60, 60, 1, 1, 45);
+	   }
+	   //batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation)
+	   
 	   batch.end();
 	   
 	   if((seconds+1)<(total_time)){
@@ -234,11 +331,12 @@ public class GameScreen_2 implements Screen {
 		   input_y=0;
 	   }
 	   
-	   if (TOPIC=="NONE"){
-		   pod_xdot=input_x;
-		   pod_ydot=input_y;
+	   if (!HAVE_WE_EXPLODED){
+		   if (TOPIC=="NONE"){
+			   pod_xdot=input_x;
+			   pod_ydot=input_y;
+		   }
 	   }
-	   
 	   pod_xdot+=pod_xdotdot*effective_delta;
 	   pod_ydot+=pod_ydotdot*effective_delta;
 	   
@@ -248,13 +346,38 @@ public class GameScreen_2 implements Screen {
 	   pod_r.x=pod_x*UNIT_LENGTH_IN_PIXELS+160-20;
 	   pod_r.y=pod_y*UNIT_LENGTH_IN_PIXELS+320-20;
 	   
+	   //pp_input=new float[]{-pod_r.width/2, -pod_r.height/2, pod_r.width/2, -pod_r.height/2, pod_r.width/2, pod_r.height/2, -pod_r.width/2, pod_r.height/2};
+	   pp_input=new float[]{pod_r.x, pod_r.y, pod_r.x+pod_r.width, pod_r.y, pod_r.x+pod_r.width, pod_r.y+pod_r.height, pod_r.x, pod_r.y+pod_r.height};
+	   pod_poly= new Polygon(pp_input);
+	   pod_poly.setOrigin(pod_r.x+20,pod_r.y+20);
+	   pod_poly.setRotation(45);
+	   
 	   Iterator<Dot> iter = dots.iterator();
-  
+	   
+	   Iterator<Kaboom> iterk = explosions.iterator();
+	      while(iterk.hasNext()) {
+	    	  Kaboom boom = iterk.next();
+	    	  if(total_time - boom.birthtime > 0.25) iterk.remove();
+	      }
+	   
 	  while(iter.hasNext()) {
 	     Dot dot = iter.next();
 	     dot.rect.y += dot.vert_speed * effective_delta*UNIT_LENGTH_IN_PIXELS;
 	     dot.rect.x += dot.horz_speed * effective_delta*UNIT_LENGTH_IN_PIXELS;
 	     if((dot.rect.x+dot.rect.width/2)>360 || (dot.rect.x+dot.rect.width/2)<-40 || (dot.rect.y+dot.rect.height/2)>520 || (dot.rect.y+dot.rect.height/2)<120) iter.remove();
+	     if(Rectangle_collides_with_Polygon(dot.rect,pod_poly) && !HAVE_WE_EXPLODED){
+	    	 System.out.println("YES");
+	    	 HAVE_WE_EXPLODED=true;
+	    	 spawnExplosion(pod_r.x,pod_r.y);
+	     }
+	     else{
+	    	 System.out.println("NO");
+	     }
+	     //System.out.println(dot.rect.x + ", " + dot.rect.y);
+	     //System.out.println(pod_poly.getTransformedVertices()[0]+", "+pod_poly.getTransformedVertices()[1]);
+	     //System.out.println(pod_poly.getTransformedVertices()[2]+", "+pod_poly.getTransformedVertices()[3]);
+	     //System.out.println(pod_poly.getTransformedVertices()[4]+", "+pod_poly.getTransformedVertices()[5]);
+	     //System.out.println(pod_poly.getTransformedVertices()[6]+", "+pod_poly.getTransformedVertices()[7]);
 	  }
 	   
    }
