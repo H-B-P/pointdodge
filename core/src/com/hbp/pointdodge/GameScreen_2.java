@@ -40,7 +40,20 @@ public class GameScreen_2 implements Screen {
 	private Texture pod_t;
 	private TextureRegion pod_tr;
 	private Rectangle pod_r;
+	
+	private Rectangle pod_r_vert;
+	private Rectangle pod_r_horz;
+	private Rectangle pod_r_horzvert;
+	
+	private Rectangle asterisk_r;
+	private Texture asterisk_t;
+	
+	private Texture poncho_t;
+	private Texture window_t;
+	
+	private Array<Rectangle> pods_r;
 	private Polygon pod_poly;
+	private Array<Polygon> pods_poly;
 	private float pod_x;
 	private float pod_y;
 	private float pod_ydot;
@@ -83,6 +96,8 @@ public class GameScreen_2 implements Screen {
 	
 	private int SHIP_DISPLACEMENT_IN_PIXELS;
 	
+	private float SHIP_BOUNDARY_DIST;
+	
 	private boolean HAVE_WE_EXPLODED;
 	
    public GameScreen_2(final PointDodge gam, int gamespeed, String topic, String level, String mode, boolean android) {
@@ -112,21 +127,58 @@ public class GameScreen_2 implements Screen {
 	 pod_y=0;
 	 pod_xdot=0;
 	 pod_ydot=0;
-	 pod_xdot=0;
-	 pod_ydot=0;
+	 pod_xdotdot=0;
+	 pod_ydotdot=0;
 		
+	poncho_t= new Texture(Gdx.files.internal("blackbar_poncho.png"));
+	if (TOPIC=="NONE"){
+		window_t=new Texture(Gdx.files.internal("window_normal.png"));
+	}
+	else{
+		window_t=new Texture(Gdx.files.internal("window_normal.png"));
+	}
+	
 	pod_t= new Texture(Gdx.files.internal("base_dodger.png"));
 	pod_tr= new TextureRegion(pod_t);
 	
 	pod_r= new Rectangle();
+	pods_r= new Array<Rectangle>();
 	pod_r.width=40;
 	pod_r.height=40;
 	pod_r.x=pod_x*80+160-20;
 	pod_r.y=pod_y*80+320-20;
 	
+	if (TOPIC=="NONE"){
+		pod_r_horz= new Rectangle();
+		pod_r_vert= new Rectangle();
+		pod_r_horzvert= new Rectangle();
+		pod_r_horz.width=40;
+		pod_r_vert.width=40;
+		pod_r_horzvert.width=40;
+		pod_r_horz.height=40;
+		pod_r_vert.height=40;
+		pod_r_horzvert.height=40;
+		pod_r_horz.x= 160-20;
+		pod_r_vert.x=160-20;
+		pod_r_horzvert.x=160-20;
+		pod_r_horz.y=320-20;
+		pod_r_vert.y=320-20;
+		pod_r_horzvert.y=320-20;
+		
+		pods_r.add(pod_r);
+		pods_r.add(pod_r_horz);
+		pods_r.add(pod_r_vert);
+		pods_r.add(pod_r_horzvert);
+	}
+	
 	
 	pp_input=new float[]{pod_r.x, pod_r.y, pod_r.x+pod_r.width, pod_r.y, pod_r.x+pod_r.width, pod_r.y+pod_r.height, pod_r.x, pod_r.y+pod_r.height};
 	pod_poly= new Polygon(pp_input);
+	
+	pods_poly= new Array<Polygon>();
+	
+	pods_poly.add(pod_poly);
+	
 	
 	camera = new OrthographicCamera();
 	camera.setToOrtho(false, 320, 480);
@@ -140,6 +192,14 @@ public class GameScreen_2 implements Screen {
     
     HAVE_WE_EXPLODED=false;
     
+    SHIP_BOUNDARY_DIST=1.5f;
+    
+    asterisk_r=new Rectangle();
+    asterisk_r.x=160-20+80;
+    asterisk_r.y=240-20+80;
+    asterisk_r.width=40;
+    asterisk_r.height=40;
+    asterisk_t=new Texture(Gdx.files.internal("asterisk2.png"));
    }
    
    //---FUNCTIONS---
@@ -280,6 +340,25 @@ public class GameScreen_2 implements Screen {
 	   
 	   batch.begin();
 	   //batch.draw(pod_t, pod_r.x-10, pod_r.y-10);
+	   
+	   
+	   
+	   if (HAVE_WE_EXPLODED){
+		   for(Kaboom boom: explosions) {
+			   batch.draw(explosion_t, boom.rect.x-20, boom.rect.y-20);
+		   }
+	   }
+	   else{
+		   batch.draw(pod_tr, pod_r.x-10, pod_r.y-10, 30, 30, 60, 60, 1, 1, 0);
+		   batch.draw(pod_tr, pod_r_horz.x-10, pod_r_horz.y-10, 30, 30, 60, 60, 1, 1, 0);
+		   batch.draw(pod_tr, pod_r_vert.x-10, pod_r_vert.y-10, 30, 30, 60, 60, 1, 1, 0);
+		   batch.draw(pod_tr, pod_r_horzvert.x-10, pod_r_horzvert.y-10, 30, 30, 60, 60, 1, 1, 0);
+		   
+	   }
+	   
+	   batch.draw(poncho_t, -800+160, -1200+240);
+	   batch.draw(window_t, 0, 80);
+	   
 	   for(Dot dot: dots) {
 		   if (dot.colour=="yellow"){
 			   batch.draw(dot_t_y, dot.rect.x, dot.rect.y);
@@ -290,15 +369,8 @@ public class GameScreen_2 implements Screen {
 		   }
 	   }
 	   
+	   batch.draw(asterisk_t, asterisk_r.x, asterisk_r.y);
 	   
-	   if (HAVE_WE_EXPLODED){
-		   for(Kaboom boom: explosions) {
-			   batch.draw(explosion_t, boom.rect.x-20, boom.rect.y-20);
-		   }
-	   }
-	   else{
-		   batch.draw(pod_tr, pod_r.x-10, pod_r.y-10, 30, 30, 60, 60, 1, 1, 45);
-	   }
 	   //batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation)
 	   
 	   batch.end();
@@ -331,11 +403,9 @@ public class GameScreen_2 implements Screen {
 		   input_y=0;
 	   }
 	   
-	   if (!HAVE_WE_EXPLODED){
-		   if (TOPIC=="NONE"){
-			   pod_xdot=input_x;
-			   pod_ydot=input_y;
-		   }
+	   if (TOPIC=="NONE"){
+		   pod_xdot=input_x;
+		   pod_ydot=input_y;
 	   }
 	   pod_xdot+=pod_xdotdot*effective_delta;
 	   pod_ydot+=pod_ydotdot*effective_delta;
@@ -343,14 +413,64 @@ public class GameScreen_2 implements Screen {
 	   pod_x+=pod_xdot*effective_delta;
 	   pod_y+=pod_ydot*effective_delta;
 	   
-	   pod_r.x=pod_x*UNIT_LENGTH_IN_PIXELS+160-20;
-	   pod_r.y=pod_y*UNIT_LENGTH_IN_PIXELS+320-20;
+	   System.out.println(pod_x);
+	   
+	   if (TOPIC=="NONE"){
+	   
+		   if (pod_x>SHIP_BOUNDARY_DIST){
+			   pod_x-=2*SHIP_BOUNDARY_DIST;
+		   }
+		   if (pod_x<-SHIP_BOUNDARY_DIST){
+			   pod_x+=2*SHIP_BOUNDARY_DIST;
+		   }
+		   if (pod_y>SHIP_BOUNDARY_DIST){
+			   pod_y-=2*SHIP_BOUNDARY_DIST;
+		   }
+		   if (pod_y<-SHIP_BOUNDARY_DIST){
+			   pod_y+=2*SHIP_BOUNDARY_DIST;
+		   }
+		   
+		   
+		   
+		   
+	   }
+	   
+	   pod_r.setCenter(pod_x*UNIT_LENGTH_IN_PIXELS+160, pod_y*UNIT_LENGTH_IN_PIXELS+320);
+	   
+	   if (TOPIC=="NONE"){
+		   pod_r_horz.y=pod_r.y;
+		   pod_r_vert.x=pod_r.x;
+		   if (pod_x<0){
+			   pod_r_horz.x=pod_r.x+SHIP_BOUNDARY_DIST*2*UNIT_LENGTH_IN_PIXELS;
+			   pod_r_horzvert.x=pod_r.x+SHIP_BOUNDARY_DIST*2*UNIT_LENGTH_IN_PIXELS;
+		   }
+		   else{
+			   pod_r_horz.x=pod_r.x-SHIP_BOUNDARY_DIST*2*UNIT_LENGTH_IN_PIXELS;
+			   pod_r_horzvert.x=pod_r.x-SHIP_BOUNDARY_DIST*2*UNIT_LENGTH_IN_PIXELS;
+		   }
+		   if (pod_y<0){
+			   pod_r_vert.y=pod_r.y+SHIP_BOUNDARY_DIST*2*UNIT_LENGTH_IN_PIXELS;
+			   pod_r_horzvert.y=pod_r.y+SHIP_BOUNDARY_DIST*2*UNIT_LENGTH_IN_PIXELS;
+		   }
+		   else{
+			   pod_r_vert.y=pod_r.y-SHIP_BOUNDARY_DIST*2*UNIT_LENGTH_IN_PIXELS;
+			   pod_r_horzvert.y=pod_r.y-SHIP_BOUNDARY_DIST*2*UNIT_LENGTH_IN_PIXELS;
+		   }
+	   }
+	   
+	   
+	   
+	   //pods_r.add(pod_r);
+	   
+	   if (TOPIC=="NONE"){
+		   
+	   }
 	   
 	   //pp_input=new float[]{-pod_r.width/2, -pod_r.height/2, pod_r.width/2, -pod_r.height/2, pod_r.width/2, pod_r.height/2, -pod_r.width/2, pod_r.height/2};
 	   pp_input=new float[]{pod_r.x, pod_r.y, pod_r.x+pod_r.width, pod_r.y, pod_r.x+pod_r.width, pod_r.y+pod_r.height, pod_r.x, pod_r.y+pod_r.height};
 	   pod_poly= new Polygon(pp_input);
 	   pod_poly.setOrigin(pod_r.x+20,pod_r.y+20);
-	   pod_poly.setRotation(45);
+	   pod_poly.setRotation(0);
 	   
 	   Iterator<Dot> iter = dots.iterator();
 	   
@@ -368,10 +488,18 @@ public class GameScreen_2 implements Screen {
 	     if(Rectangle_collides_with_Polygon(dot.rect,pod_poly) && !HAVE_WE_EXPLODED){
 	    	 System.out.println("YES");
 	    	 HAVE_WE_EXPLODED=true;
+	    	 
 	    	 spawnExplosion(pod_r.x,pod_r.y);
+	    	 
+	    	 Iterator<Rectangle> iterdie = pods_r.iterator();
+	    	 while (iterdie.hasNext()){
+	    		 Rectangle a_pod=iterdie.next();
+	    		 spawnExplosion(a_pod.x, a_pod.y);
+	    	 }
+	    	 
 	     }
 	     else{
-	    	 System.out.println("NO");
+	    	 //System.out.println("NO");
 	     }
 	     //System.out.println(dot.rect.x + ", " + dot.rect.y);
 	     //System.out.println(pod_poly.getTransformedVertices()[0]+", "+pod_poly.getTransformedVertices()[1]);
