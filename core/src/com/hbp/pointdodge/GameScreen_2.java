@@ -60,6 +60,14 @@ public class GameScreen_2 implements Screen {
 	private float pod_xdot;
 	private float pod_xdotdot;
 	private float pod_ydotdot;
+	private float pod_xdotdotdot;
+	private float pod_ydotdotdot;
+	
+	private float pod_ydash;
+	private float pod_ydashdash;
+	private float pod_ydotdash;
+	private float pod_ydashdot;
+	
 	private FitViewport viewport;
 	private int GAMESPEED;
 	private String TOPIC;
@@ -129,6 +137,13 @@ public class GameScreen_2 implements Screen {
 	 pod_ydot=0;
 	 pod_xdotdot=0;
 	 pod_ydotdot=0;
+	 pod_xdotdotdot=0;
+	 pod_ydotdotdot=0;
+	 
+	 pod_ydash=0;
+	 pod_ydashdash=0;
+	 pod_ydashdot=0;
+	 pod_ydotdash=0;
 		
 	poncho_t= new Texture(Gdx.files.internal("blackbar_poncho.png"));
 	if (TOPIC=="NONE"){
@@ -138,7 +153,12 @@ public class GameScreen_2 implements Screen {
 		window_t=new Texture(Gdx.files.internal("window_normal.png"));
 	}
 	
-	pod_t= new Texture(Gdx.files.internal("base_dodger.png"));
+	if (TOPIC=="CARTESIAN"){
+		pod_t= new Texture(Gdx.files.internal("cartesian_dodger.png"));
+	}
+	else{
+		pod_t= new Texture(Gdx.files.internal("base_dodger.png"));
+	}
 	pod_tr= new TextureRegion(pod_t);
 	
 	pod_r= new Rectangle();
@@ -148,7 +168,7 @@ public class GameScreen_2 implements Screen {
 	pod_r.x=pod_x*80+160-20;
 	pod_r.y=pod_y*80+320-20;
 	
-	if (TOPIC=="NONE"){
+	if (TOPIC=="NONE" || TOPIC=="CARTESIAN"){
 		pod_r_horz= new Rectangle();
 		pod_r_vert= new Rectangle();
 		pod_r_horzvert= new Rectangle();
@@ -380,7 +400,7 @@ public class GameScreen_2 implements Screen {
     	  seconds+=1;
     	  
     	  if (seconds==2){
-    		  spawnTutorialDot(-1,-1);
+    		  //spawnTutorialDot(-1,-1);
     	  }
 	   }
 	   
@@ -407,15 +427,116 @@ public class GameScreen_2 implements Screen {
 		   pod_xdot=input_x;
 		   pod_ydot=input_y;
 	   }
+	   if (TOPIC=="CARTESIAN"){
+		   if (LEVEL=="xdotydot"){
+			   pod_xdot=input_x;
+			   pod_ydot=input_y;
+		   }
+		   if (LEVEL=="xy"){
+			   pod_x=input_x;
+			   pod_y=input_y;
+		   }
+		   if (LEVEL=="xdotdotydotdot"){
+			   pod_xdotdot=input_x;
+			   pod_ydotdot=input_y;
+		   }
+		   if (LEVEL=="xdoty"){
+			   pod_xdot=input_x;
+			   pod_y=input_y;
+		   }
+		   if (LEVEL=="xdotdoty"){
+			   pod_xdotdot=input_x;
+			   pod_y=input_y;
+		   }
+		   if (LEVEL=="xdotdotydot"){
+			   pod_xdotdot=input_x;
+			   pod_ydot=input_y;
+		   }
+		   if (LEVEL=="xdotdotdoty"){
+			   pod_xdotdotdot=input_x;
+			   pod_y=input_y;
+		   }
+		   if (LEVEL=="xdotdotdotydotdotdot"){
+			   pod_xdotdotdot=input_x;
+			   pod_ydotdotdot=input_y;
+		   }
+		   if (LEVEL=="xdotydash"){
+			   pod_xdot=input_x;
+			   pod_ydash=input_y;
+		   }
+		   if (LEVEL=="xdotydashdash"){
+			   pod_xdot=input_x;
+			   pod_ydashdash=input_y;
+		   }
+		   if (LEVEL=="xdotydashdot"){
+			   pod_xdot=input_x;
+			   pod_ydashdot=input_y;
+		   }
+		   if (LEVEL=="xdotydotdash"){
+			   pod_xdot=input_x;
+			   pod_ydotdash=input_y;
+		   }
+	   }
+	   
+	   if (pod_xdotdot>=1){
+		   pod_xdotdot=1;
+	   }
+	   if (pod_xdotdot<=-1){
+		   pod_xdotdot=-1;
+	   }
+	   if (pod_ydotdot>=1){
+		   pod_ydotdot=1;
+	   }
+	   if (pod_ydotdot<=-1){
+		   pod_ydotdot=-1;
+	   }
+	   
+	   if (pod_ydash>=1){
+		   pod_ydash=1;
+	   }
+	   if (pod_ydash<=-1){
+		   pod_ydash=-1;
+	   }
+	   
+	   if (pod_xdot>=1){
+		   pod_xdot=1;
+	   }
+	   if (pod_xdot<=-1){
+		   pod_xdot=-1;
+	   }
+	   if (pod_ydot>=1){
+		   pod_ydot=1;
+	   }
+	   if (pod_ydot<=-1){
+		   pod_ydot=-1;
+	   }
+	   
+	   if (Gdx.input.isKeyPressed(Keys.SPACE)){
+		   pod_xdot=0;
+		   pod_ydot=0;
+	   }
+	   
+	   
+	   pod_xdotdot+=pod_xdotdotdot*effective_delta;
+	   pod_ydotdot+=pod_ydotdotdot*effective_delta;
+	   
+	   
 	   pod_xdot+=pod_xdotdot*effective_delta;
 	   pod_ydot+=pod_ydotdot*effective_delta;
+	   
+	   pod_ydash+=pod_ydashdash*pod_xdot*effective_delta;
+	   pod_ydot+=pod_ydotdash*pod_xdot*effective_delta;
+	   pod_ydash+=pod_ydashdot*effective_delta;
+	   pod_y+=pod_ydash*pod_xdot*effective_delta;
+	   
 	   
 	   pod_x+=pod_xdot*effective_delta;
 	   pod_y+=pod_ydot*effective_delta;
 	   
 	   System.out.println(pod_x);
+	   System.out.println(pod_y);
 	   
-	   if (TOPIC=="NONE"){
+	   if (TOPIC=="NONE" || TOPIC=="CARTESIAN"){
 	   
 		   if (pod_x>SHIP_BOUNDARY_DIST){
 			   pod_x-=2*SHIP_BOUNDARY_DIST;
@@ -435,9 +556,9 @@ public class GameScreen_2 implements Screen {
 		   
 	   }
 	   
-	   pod_r.setCenter(pod_x*UNIT_LENGTH_IN_PIXELS+160, pod_y*UNIT_LENGTH_IN_PIXELS+320);
+	   pod_r.setCenter(pod_x*UNIT_LENGTH_IN_PIXELS+160, pod_y*UNIT_LENGTH_IN_PIXELS+240);
 	   
-	   if (TOPIC=="NONE"){
+	   if (TOPIC=="NONE" || TOPIC=="CARTESIAN"){
 		   pod_r_horz.y=pod_r.y;
 		   pod_r_vert.x=pod_r.x;
 		   if (pod_x<0){
@@ -459,12 +580,6 @@ public class GameScreen_2 implements Screen {
 	   }
 	   
 	   
-	   
-	   //pods_r.add(pod_r);
-	   
-	   if (TOPIC=="NONE"){
-		   
-	   }
 	   
 	   //pp_input=new float[]{-pod_r.width/2, -pod_r.height/2, pod_r.width/2, -pod_r.height/2, pod_r.width/2, pod_r.height/2, -pod_r.width/2, pod_r.height/2};
 	   pp_input=new float[]{pod_r.x, pod_r.y, pod_r.x+pod_r.width, pod_r.y, pod_r.x+pod_r.width, pod_r.y+pod_r.height, pod_r.x, pod_r.y+pod_r.height};
@@ -506,6 +621,18 @@ public class GameScreen_2 implements Screen {
 	     //System.out.println(pod_poly.getTransformedVertices()[2]+", "+pod_poly.getTransformedVertices()[3]);
 	     //System.out.println(pod_poly.getTransformedVertices()[4]+", "+pod_poly.getTransformedVertices()[5]);
 	     //System.out.println(pod_poly.getTransformedVertices()[6]+", "+pod_poly.getTransformedVertices()[7]);
+	  }
+	  
+	  if (asterisk_r.overlaps(pod_r) || asterisk_r.overlaps(pod_r_horz) || asterisk_r.overlaps(pod_r_vert) || asterisk_r.overlaps(pod_r_horzvert)){
+		  asterisk_r.x+=80*MathUtils.random(1, 2);
+		  asterisk_r.y+=80*MathUtils.random(1, 2);
+		  if (asterisk_r.x>(160-20+80)){
+			  asterisk_r.x-=240;
+		  }
+		  
+		  if (asterisk_r.y>(240-20+80)){
+			  asterisk_r.y-=240;
+		  }
 	  }
 	   
    }

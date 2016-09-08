@@ -105,7 +105,37 @@ public class LevelSelectScreen implements Screen {
 			
 			TRIM_t=new Texture(Gdx.files.internal("abutton_trim_boring.png"));
 		}
-		if (TOPIC=="CARTESIAN"){
+		if (TOPIC=="CARTESIAN_I"){
+			score_one=prefs.getInteger("score_CARTESIAN_add");
+			score_two=prefs.getInteger("score_CARTESIAN_flip");
+			score_three=prefs.getInteger("score_CARTESIAN_multiply");
+			score_four=prefs.getInteger("score_CARTESIAN_lines");
+			
+			one_t = new Texture(Gdx.files.internal("abutton_add.png"));
+			two_t = new Texture(Gdx.files.internal("abutton_flip.png"));
+			three_t = new Texture(Gdx.files.internal("abutton_multiply.png"));
+			four_t = new Texture(Gdx.files.internal("abutton_lines.png"));
+			
+			TRIM_t=new Texture(Gdx.files.internal("abutton_trim_yellow.png"));
+
+		}
+		
+		if (TOPIC=="CARTESIAN_II"){
+			score_one=prefs.getInteger("score_CARTESIAN_add");
+			score_two=prefs.getInteger("score_CARTESIAN_flip");
+			score_three=prefs.getInteger("score_CARTESIAN_multiply");
+			score_four=prefs.getInteger("score_CARTESIAN_lines");
+			
+			one_t = new Texture(Gdx.files.internal("abutton_add.png"));
+			two_t = new Texture(Gdx.files.internal("abutton_flip.png"));
+			three_t = new Texture(Gdx.files.internal("abutton_multiply.png"));
+			four_t = new Texture(Gdx.files.internal("abutton_lines.png"));
+			
+			TRIM_t=new Texture(Gdx.files.internal("abutton_trim_yellow.png"));
+
+		}
+		
+		if (TOPIC=="CARTESIAN_III"){
 			score_one=prefs.getInteger("score_CARTESIAN_add");
 			score_two=prefs.getInteger("score_CARTESIAN_flip");
 			score_three=prefs.getInteger("score_CARTESIAN_multiply");
@@ -412,23 +442,87 @@ public class LevelSelectScreen implements Screen {
 			            dispose();
 					}
 					if (nxt_r.contains(tp_x,tp_y)){
-			            game.setScreen(new LevelSelectScreen(game, "CARTESIAN", MINESPEED, ENDLESS, ANDROID));
+			            game.setScreen(new LevelSelectScreen(game, "CARTESIAN_I", MINESPEED, ENDLESS, ANDROID));
 			            dispose();
 					}
 	
 				}
 				
-				if (TOPIC=="CARTESIAN"){
+				if (TOPIC=="CARTESIAN_I"){
 					if (one_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdotydot" , "pointgen", ANDROID));
+						dispose();
 					}
 					if (two_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xy" , "pointgen", ANDROID));
+						dispose();
 					}
 					if (three_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdotdotydotdot" , "pointgen", ANDROID));
+						dispose();
 					}
 					if (four_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdoty" , "pointgen", ANDROID));
+						dispose();
 					}
 					if (prv_r.contains(tp_x,tp_y)){
 						game.setScreen(new LevelSelectScreen(game, "NONE", MINESPEED, ENDLESS, ANDROID));
+			            dispose();
+					}
+					if (nxt_r.contains(tp_x,tp_y)){
+						game.setScreen(new LevelSelectScreen(game, "CARTESIAN_II", MINESPEED, ENDLESS, ANDROID));
+			            dispose();
+					}
+	
+				}
+				
+				if (TOPIC=="CARTESIAN_II"){
+					if (one_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdotdoty" , "pointgen", ANDROID));
+						dispose();
+					}
+					if (two_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdotdotydot" , "pointgen", ANDROID));
+						dispose();
+					}
+					if (three_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdotdotdoty" , "pointgen", ANDROID));
+						dispose();
+					}
+					if (four_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdotdotdotydotdotdot" , "pointgen", ANDROID));
+						dispose();
+					}
+					if (prv_r.contains(tp_x,tp_y)){
+						game.setScreen(new LevelSelectScreen(game, "CARTESIAN_I", MINESPEED, ENDLESS, ANDROID));
+			            dispose();
+					}
+					if (nxt_r.contains(tp_x,tp_y)){
+						game.setScreen(new LevelSelectScreen(game, "CARTESIAN_III", MINESPEED, ENDLESS, ANDROID));
+			            dispose();
+					}
+	
+				}
+				
+				if (TOPIC=="CARTESIAN_III"){
+					if (one_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdotydash" , "pointgen", ANDROID));
+						dispose();
+					}
+					if (two_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdotydashdash" , "pointgen", ANDROID));
+						dispose();
+					}
+					if (three_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdotydotdash" , "pointgen", ANDROID));
+						dispose();
+					}
+					if (four_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN", "xdotydashdot" , "pointgen", ANDROID));
+						dispose();
+					}
+					if (prv_r.contains(tp_x,tp_y)){
+						game.setScreen(new LevelSelectScreen(game, "CARTESIAN_II", MINESPEED, ENDLESS, ANDROID));
 			            dispose();
 					}
 					if (nxt_r.contains(tp_x,tp_y)){
@@ -448,7 +542,7 @@ public class LevelSelectScreen implements Screen {
 					if (four_r.contains(tp_x,tp_y)){
 					}
 					if (prv_r.contains(tp_x,tp_y)){
-			            game.setScreen(new LevelSelectScreen(game, "CARTESIAN", MINESPEED, ENDLESS, ANDROID));
+			            game.setScreen(new LevelSelectScreen(game, "CARTESIAN_III", MINESPEED, ENDLESS, ANDROID));
 			            dispose();
 					}
 					if (nxt_r.contains(tp_x,tp_y)){
