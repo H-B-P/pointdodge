@@ -293,7 +293,7 @@ public class MainMenuScreen implements Screen {
 				}
 				
 				if (ylocus==4){
-		            game.setScreen(new LevelSelectScreen(game, "NONE", MINESPEED,  false, ANDROID));
+		            game.setScreen(new LevelSelectScreen(game, "NONE", MINESPEED, "chill", ANDROID));
 		            dispose();
 				}
 		}

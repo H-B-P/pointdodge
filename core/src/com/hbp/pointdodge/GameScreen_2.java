@@ -48,8 +48,12 @@ public class GameScreen_2 implements Screen {
 	private Rectangle asterisk_r;
 	private Texture asterisk_t;
 	
+	private Texture statusbar_t;
+	
 	private Texture poncho_t;
 	private Texture window_t;
+	
+	private Texture grid_t;
 	
 	private Array<Rectangle> pods_r;
 	private Polygon pod_poly;
@@ -93,6 +97,8 @@ public class GameScreen_2 implements Screen {
 	
 	private Texture explosion_t;
 	
+	private int score;
+	
 	private SpriteBatch batch;
 	
 	private float total_time;
@@ -108,12 +114,15 @@ public class GameScreen_2 implements Screen {
 	
 	private boolean HAVE_WE_EXPLODED;
 	
+	private boolean ANDROID;
+	
    public GameScreen_2(final PointDodge gam, int gamespeed, String topic, String level, String mode, boolean android) {
 	   
 	   GAMESPEED=gamespeed;
 	   TOPIC=topic;
 	   LEVEL=level;
 	   MODE=mode;
+	   ANDROID=android;
 	 this.game = gam;
       
 	 dots=new Array<Dot>();
@@ -144,7 +153,10 @@ public class GameScreen_2 implements Screen {
 	 pod_ydashdash=0;
 	 pod_ydashdot=0;
 	 pod_ydotdash=0;
-		
+	 
+	 score=0;
+	
+	 statusbar_t=new Texture(Gdx.files.internal("statusbar.png"));
 	poncho_t= new Texture(Gdx.files.internal("blackbar_poncho.png"));
 	if (TOPIC=="NONE"){
 		window_t=new Texture(Gdx.files.internal("window_normal.png"));
@@ -155,9 +167,11 @@ public class GameScreen_2 implements Screen {
 	
 	if (TOPIC=="CARTESIAN"){
 		pod_t= new Texture(Gdx.files.internal("cartesian_dodger.png"));
+		grid_t= new Texture(Gdx.files.internal("grid_II.png"));
 	}
 	else{
 		pod_t= new Texture(Gdx.files.internal("base_dodger.png"));
+		grid_t= new Texture(Gdx.files.internal("grid_II.png"));
 	}
 	pod_tr= new TextureRegion(pod_t);
 	
@@ -191,7 +205,6 @@ public class GameScreen_2 implements Screen {
 		pods_r.add(pod_r_horzvert);
 	}
 	
-	
 	pp_input=new float[]{pod_r.x, pod_r.y, pod_r.x+pod_r.width, pod_r.y, pod_r.x+pod_r.width, pod_r.y+pod_r.height, pod_r.x, pod_r.y+pod_r.height};
 	pod_poly= new Polygon(pp_input);
 	
@@ -215,14 +228,19 @@ public class GameScreen_2 implements Screen {
     SHIP_BOUNDARY_DIST=1.5f;
     
     asterisk_r=new Rectangle();
-    asterisk_r.x=160-20+80;
-    asterisk_r.y=240-20+80;
+    asterisk_r.x=160-20+plusorminus()*80;
+    asterisk_r.y=240-20+plusorminus()*80;
     asterisk_r.width=40;
     asterisk_r.height=40;
     asterisk_t=new Texture(Gdx.files.internal("asterisk2.png"));
    }
    
    //---FUNCTIONS---
+   
+   private int plusorminus(){
+	   int coin=MathUtils.random(0,1);
+	   return coin*2-1;
+   }
    
    //--Collisions between geometric shapes. Why is this not already part of libgdx?
    
@@ -361,7 +379,9 @@ public class GameScreen_2 implements Screen {
 	   batch.begin();
 	   //batch.draw(pod_t, pod_r.x-10, pod_r.y-10);
 	   
-	   
+	   if (TOPIC!="NONE"){
+		   //batch.draw(grid_t, 0, 0);
+	   }
 	   
 	   if (HAVE_WE_EXPLODED){
 		   for(Kaboom boom: explosions) {
@@ -393,6 +413,9 @@ public class GameScreen_2 implements Screen {
 	   
 	   //batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation)
 	   
+	   batch.draw(statusbar_t, 0, 0);
+	   batch.draw(statusbar_t, 0, 400);
+	   
 	   batch.end();
 	   
 	   if((seconds+1)<(total_time)){
@@ -402,6 +425,11 @@ public class GameScreen_2 implements Screen {
     	  if (seconds==2){
     		  //spawnTutorialDot(-1,-1);
     	  }
+	   }
+	   
+	   if (Gdx.input.isKeyPressed(Keys.ESCAPE)){
+		   game.setScreen(new LevelSelectScreen(game, "NONE", GAMESPEED, MODE, ANDROID));
+		   dispose();
 	   }
 	   
 	   if (Gdx.input.isKeyPressed(Keys.RIGHT) && !Gdx.input.isKeyPressed(Keys.LEFT)){
@@ -624,6 +652,7 @@ public class GameScreen_2 implements Screen {
 	  }
 	  
 	  if (asterisk_r.overlaps(pod_r) || asterisk_r.overlaps(pod_r_horz) || asterisk_r.overlaps(pod_r_vert) || asterisk_r.overlaps(pod_r_horzvert)){
+		  score+=1;
 		  asterisk_r.x+=80*MathUtils.random(1, 2);
 		  asterisk_r.y+=80*MathUtils.random(1, 2);
 		  if (asterisk_r.x>(160-20+80)){
