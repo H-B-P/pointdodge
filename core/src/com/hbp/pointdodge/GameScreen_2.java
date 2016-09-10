@@ -116,6 +116,9 @@ public class GameScreen_2 implements Screen {
 	
 	private boolean ANDROID;
 	
+	private String ypon;
+	private BitmapFont font;
+	
    public GameScreen_2(final PointDodge gam, int gamespeed, String topic, String level, String mode, boolean android) {
 	   
 	   GAMESPEED=gamespeed;
@@ -139,6 +142,8 @@ public class GameScreen_2 implements Screen {
 	 dot_t_p=new Texture(Gdx.files.internal("dots/dot_purple.png"));
 	 
 	 explosion_t = new Texture(Gdx.files.internal("explosion.png"));
+	 
+	 ypon="";
 	 
 	 pod_x=0;
 	 pod_y=0;
@@ -233,6 +238,9 @@ public class GameScreen_2 implements Screen {
     asterisk_r.width=40;
     asterisk_r.height=40;
     asterisk_t=new Texture(Gdx.files.internal("asterisk2.png"));
+    
+    font = new BitmapFont();
+    font.setColor(Color.BLACK);
    }
    
    //---FUNCTIONS---
@@ -361,6 +369,12 @@ public class GameScreen_2 implements Screen {
 	      dots.add(dot);
 	   }
    
+   private String double_formatted(double doub){
+	   double a=Math.round(doub*10.0)/10.0;
+	   Float b=(Float)(float)a;
+	   return b.toString();
+   }
+   
    //---RENDER---
    @Override
    public void render(float delta) {
@@ -415,6 +429,55 @@ public class GameScreen_2 implements Screen {
 	   
 	   batch.draw(statusbar_t, 0, 0);
 	   batch.draw(statusbar_t, 0, 400);
+	   
+	   if (TOPIC.equals("CARTESIAN")){
+		   if (LEVEL.startsWith("xdotdotdot")){
+			   font.draw(batch, double_formatted(pod_xdotdotdot), 30, 470);
+			   font.draw(batch, double_formatted(pod_xdotdot), 30, 445);
+			   font.draw(batch, double_formatted(pod_xdot), 30, 420);
+			   if (LEVEL.equals("xdotdotdotydotdotdot")){
+				   font.draw(batch, double_formatted(pod_ydotdotdot), 90, 470);
+				   font.draw(batch, double_formatted(pod_ydotdot), 90, 445);
+				   font.draw(batch, double_formatted(pod_ydot), 90, 420);
+			   }
+			   else{
+				   font.draw(batch, double_formatted(pod_y), 90, 420);
+			   }
+		   }
+		   else{
+			   font.draw(batch, double_formatted(pod_x), 30, 420);
+			   font.draw(batch, double_formatted(pod_y), 90, 420);
+			   if(LEVEL.startsWith("xdot")){
+				   font.draw(batch, double_formatted(pod_xdot), 30, 445);
+			   }
+			   if(LEVEL.startsWith("xdotdot")){
+				   font.draw(batch, double_formatted(pod_xdotdot), 30, 470);
+			   }
+			   if (LEVEL.split("y").length>1){
+				   ypon=LEVEL.split("y")[1];
+				   if(ypon.startsWith("ydot")){
+					   font.draw(batch, double_formatted(pod_ydot), 90, 445);
+				   }
+				   if(ypon.startsWith("ydash")){
+					   font.draw(batch, double_formatted(pod_ydash), 90, 445);
+				   }
+				   if(ypon.startsWith("ydotdot")){
+					   font.draw(batch, double_formatted(pod_ydotdot), 90, 470);
+				   }
+				   if(ypon.startsWith("ydashdot")){
+					   font.draw(batch, double_formatted(pod_ydashdot), 90, 470);
+				   }
+				   if(ypon.startsWith("ydotdash")){
+					   font.draw(batch, double_formatted(pod_ydotdash), 90, 470);
+				   }
+				   if(ypon.startsWith("ydashdash")){
+					   font.draw(batch, double_formatted(pod_ydashdash), 90, 470);
+				   }
+			   }
+		   }
+	   }
+	   
+	   font.draw(batch, "Score: "+score, 150, 445);
 	   
 	   batch.end();
 	   
