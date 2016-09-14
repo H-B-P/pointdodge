@@ -425,6 +425,30 @@ public class GameScreen_2 implements Screen {
 	   spawnCartesianDot_horz(1.75f,speed);
 }
    
+   private void spawnCartesianSlash_vert(int st, float speed){
+	  if (seconds==st){
+ 		  spawnCartesianDot_vert(-1.5f,speed);
+ 	  }
+	  if (seconds==(st+2)){
+ 		  spawnCartesianDot_vert(-1.0f,speed);
+ 	  }
+	  if (seconds==(st+4)){
+ 		  spawnCartesianDot_vert(-0.5f,speed);
+ 	  }
+	  if (seconds==(st+6)){
+ 		  spawnCartesianDot_vert(0.0f,speed);
+ 	  }
+	  if (seconds==(st+8)){
+ 		  spawnCartesianDot_vert(0.5f,speed);
+ 	  }
+	  if (seconds==(st+10)){
+ 		  spawnCartesianDot_vert(1.0f,speed);
+ 	  }
+	  if (seconds==(st+12)){
+ 		  spawnCartesianDot_vert(1.5f,speed);
+ 	  }
+   }
+   
    private String double_formatted(double doub){
 	   double a=Math.round(doub*10.0)/10.0;
 	   Float b=(Float)(float)a;
@@ -544,17 +568,43 @@ public class GameScreen_2 implements Screen {
 //    		  spawnCartesianDot_vert(0,0.4f);
 //    		  spawnCartesianDot_horz(0,0.4f);
 //    	  }
-    	  if ((seconds%60)==20){
-    		  spawnCartesianWall_vert(0.2f);
-    		  spawnCartesianWall_horz(0.2f);
-    	  }
-    	  if ((seconds%60)==0){
-    		  spawnCartesianGapWall_vert(1,-0.2f);
-    		  spawnCartesianGapWall_horz(1,-0.2f);
-    	  }
-    	  if ((seconds%60)==40){
-    		  spawnCartesianGapWall_vert(0,-0.2f);
-    	  }
+    	  spawnCartesianSlash_vert(0, 0.2f);
+    	  spawnCartesianSlash_vert(20, 0.2f);
+    	  spawnCartesianSlash_vert(30, 0.2f);
+    	  spawnCartesianSlash_vert(40, 0.2f);
+    	  spawnCartesianSlash_vert(50, 0.2f);
+//    	  if (seconds==1){
+//    		  spawnCartesianDot_vert(-1.5f,0.2f);
+//    	  }
+//    	  if (seconds==3){
+//    		  spawnCartesianDot_vert(-1.0f,0.2f);
+//    	  }
+//    	  if (seconds==5){
+//    		  spawnCartesianDot_vert(-0.5f,0.2f);
+//    	  }
+//    	  if (seconds==7){
+//    		  spawnCartesianDot_vert(0.0f,0.2f);
+//    	  }
+//    	  if (seconds==9){
+//    		  spawnCartesianDot_vert(0.5f,0.2f);
+//    	  }
+//    	  if (seconds==11){
+//    		  spawnCartesianDot_vert(1.0f,0.2f);
+//    	  }
+//    	  if (seconds==13){
+//    		  spawnCartesianDot_vert(1.5f,0.2f);
+//    	  }
+//    	  if ((seconds%60)==20){
+//    		  spawnCartesianWall_vert(0.2f);
+//    		  spawnCartesianWall_horz(0.2f);
+//    	  }
+//    	  if ((seconds%60)==0){
+//    		  spawnCartesianGapWall_vert(1,-0.2f);
+//    		  spawnCartesianGapWall_horz(1,-0.2f);
+//    	  }
+//    	  if ((seconds%60)==40){
+//    		  spawnCartesianGapWall_vert(0,-0.2f);
+//    	  }
 	   }
 	   
 	   if (Gdx.input.isKeyPressed(Keys.ESCAPE)){
