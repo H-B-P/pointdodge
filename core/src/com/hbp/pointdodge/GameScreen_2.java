@@ -484,7 +484,7 @@ public class GameScreen_2 implements Screen {
 		  System.out.println(seconds);
     	  seconds+=1;
     	  
-    	  if (seconds==2){
+    	  if ((seconds%2)==0){
     		  spawnCartesianDot_vert(0,1);
     	  }
 	   }
@@ -689,7 +689,7 @@ public class GameScreen_2 implements Screen {
 	     Dot dot = iter.next();
 	     dot.rect.y += dot.vert_speed * effective_delta*UNIT_LENGTH_IN_PIXELS;
 	     dot.rect.x += dot.horz_speed * effective_delta*UNIT_LENGTH_IN_PIXELS;
-	     if((dot.rect.x+dot.rect.width/2)>360 || (dot.rect.x+dot.rect.width/2)<-40 || (dot.rect.y+dot.rect.height/2)>520 || (dot.rect.y+dot.rect.height/2)<120) iter.remove();
+	     if((dot.rect.x+dot.rect.width/2)>360 || (dot.rect.x+dot.rect.width/2)<-40 || (dot.rect.y+dot.rect.height/2)>420 || (dot.rect.y+dot.rect.height/2)<60) iter.remove();
 	     if(Rectangle_collides_with_Polygon(dot.rect,pod_poly) && !HAVE_WE_EXPLODED){
 	    	 System.out.println("YES");
 	    	 HAVE_WE_EXPLODED=true;
@@ -713,7 +713,7 @@ public class GameScreen_2 implements Screen {
 	     //System.out.println(pod_poly.getTransformedVertices()[6]+", "+pod_poly.getTransformedVertices()[7]);
 	  }
 	  
-	  if (asterisk_r.overlaps(pod_r) || asterisk_r.overlaps(pod_r_horz) || asterisk_r.overlaps(pod_r_vert) || asterisk_r.overlaps(pod_r_horzvert)){
+	  if ((!HAVE_WE_EXPLODED)&&(asterisk_r.overlaps(pod_r) || asterisk_r.overlaps(pod_r_horz) || asterisk_r.overlaps(pod_r_vert) || asterisk_r.overlaps(pod_r_horzvert))){
 		  score+=1;
 		  asterisk_r.x+=80*MathUtils.random(1, 2);
 		  asterisk_r.y+=80*MathUtils.random(1, 2);
