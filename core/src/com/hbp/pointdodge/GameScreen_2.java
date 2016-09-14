@@ -331,10 +331,10 @@ public class GameScreen_2 implements Screen {
 	      dot.rect.width = 11;
 	      dot.rect.height = 11;
 	      if (speed>0){
-	    	  dot.rect.setCenter(-10, posn*UNIT_LENGTH_IN_PIXELS+320f);
+	    	  dot.rect.setCenter(-10, posn*UNIT_LENGTH_IN_PIXELS+240f);
 	      }
 	      if (speed<0){
-	    	  dot.rect.setCenter(330, posn*UNIT_LENGTH_IN_PIXELS+320f);
+	    	  dot.rect.setCenter(330, posn*UNIT_LENGTH_IN_PIXELS+240f);
 	      }
 	      
 	      dot.vert_speed = 0;
@@ -368,6 +368,62 @@ public class GameScreen_2 implements Screen {
 	      
 	      dots.add(dot);
 	   }
+   
+   private void spawnCartesianWall_vert(float speed){
+		   spawnCartesianDot_vert(-1.75f,speed);
+		   spawnCartesianDot_vert(-1.25f,speed);
+		   spawnCartesianDot_vert(-0.75f,speed);
+		   spawnCartesianDot_vert(-0.25f,speed);
+		   spawnCartesianDot_vert(0.25f,speed);
+		   spawnCartesianDot_vert(0.75f,speed);
+		   spawnCartesianDot_vert(1.25f,speed);
+		   spawnCartesianDot_vert(1.75f,speed);
+   }
+   
+   private void spawnCartesianGapWall_vert(int gap, float speed){
+	   spawnCartesianDot_vert(-1.75f,speed);
+	   if (gap!=-1){
+		   spawnCartesianDot_vert(-1.25f,speed);
+		   spawnCartesianDot_vert(-0.75f,speed);
+	   }
+	   if (gap!=0){
+		   spawnCartesianDot_vert(-0.25f,speed);
+		   spawnCartesianDot_vert(0.25f,speed);
+	   }
+	   if (gap!=1){
+		   spawnCartesianDot_vert(0.75f,speed);
+		   spawnCartesianDot_vert(1.25f,speed);
+	   }
+	   spawnCartesianDot_vert(1.75f,speed);
+}
+   
+   private void spawnCartesianWall_horz(float speed){
+	   spawnCartesianDot_vert(-1.75f,speed);
+	   spawnCartesianDot_vert(-1.25f,speed);
+	   spawnCartesianDot_vert(-0.75f,speed);
+	   spawnCartesianDot_vert(-0.25f,speed);
+	   spawnCartesianDot_vert(0.25f,speed);
+	   spawnCartesianDot_vert(0.75f,speed);
+	   spawnCartesianDot_vert(1.25f,speed);
+	   spawnCartesianDot_vert(1.75f,speed);
+}
+   
+   private void spawnCartesianGapWall_horz(int gap, float speed){
+	   spawnCartesianDot_horz(-1.75f,speed);
+	   if (gap!=-1){
+		   spawnCartesianDot_horz(-1.25f,speed);
+		   spawnCartesianDot_horz(-0.75f,speed);
+	   }
+	   if (gap!=0){
+		   spawnCartesianDot_horz(-0.25f,speed);
+		   spawnCartesianDot_horz(0.25f,speed);
+	   }
+	   if (gap!=1){
+		   spawnCartesianDot_horz(0.75f,speed);
+		   spawnCartesianDot_horz(1.25f,speed);
+	   }
+	   spawnCartesianDot_horz(1.75f,speed);
+}
    
    private String double_formatted(double doub){
 	   double a=Math.round(doub*10.0)/10.0;
@@ -484,8 +540,20 @@ public class GameScreen_2 implements Screen {
 		  System.out.println(seconds);
     	  seconds+=1;
     	  
-    	  if ((seconds%2)==0){
-    		  spawnCartesianDot_vert(0,1);
+//    	  if ((seconds%5)==0){
+//    		  spawnCartesianDot_vert(0,0.4f);
+//    		  spawnCartesianDot_horz(0,0.4f);
+//    	  }
+    	  if ((seconds%60)==20){
+    		  spawnCartesianWall_vert(0.2f);
+    		  spawnCartesianWall_horz(0.2f);
+    	  }
+    	  if ((seconds%60)==0){
+    		  spawnCartesianGapWall_vert(1,-0.2f);
+    		  spawnCartesianGapWall_horz(1,-0.2f);
+    	  }
+    	  if ((seconds%60)==40){
+    		  spawnCartesianGapWall_vert(0,-0.2f);
     	  }
 	   }
 	   
