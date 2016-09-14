@@ -353,10 +353,10 @@ public class GameScreen_2 implements Screen {
 	      dot.rect.width = 11;
 	      dot.rect.height = 11;
 	      if (speed>0){
-	    	  dot.rect.setCenter(posn*UNIT_LENGTH_IN_PIXELS+160f, 150);
+	    	  dot.rect.setCenter(posn*UNIT_LENGTH_IN_PIXELS+160f, 70);
 	      }
 	      if (speed<0){
-	    	  dot.rect.setCenter(posn*UNIT_LENGTH_IN_PIXELS+160f, 490);
+	    	  dot.rect.setCenter(posn*UNIT_LENGTH_IN_PIXELS+160f, 410);
 	      }
 	      
 	      dot.vert_speed = speed;
@@ -419,7 +419,6 @@ public class GameScreen_2 implements Screen {
 		   }
 		   else{
 			   batch.draw(dot_t_n, dot.rect.x, dot.rect.y);
-			   //System.out.println("DEFO GOT THIS FAR");
 		   }
 	   }
 	   
@@ -454,23 +453,23 @@ public class GameScreen_2 implements Screen {
 				   font.draw(batch, double_formatted(pod_xdotdot), 30, 470);
 			   }
 			   if (LEVEL.split("y").length>1){
-				   ypon=LEVEL.split("y")[1];
-				   if(ypon.startsWith("ydot")){
+				   ypon=(LEVEL.split("y"))[1];
+				   if(ypon.startsWith("dot")){
 					   font.draw(batch, double_formatted(pod_ydot), 90, 445);
 				   }
-				   if(ypon.startsWith("ydash")){
+				   if(ypon.startsWith("dash")){
 					   font.draw(batch, double_formatted(pod_ydash), 90, 445);
 				   }
-				   if(ypon.startsWith("ydotdot")){
+				   if(ypon.startsWith("dotdot")){
 					   font.draw(batch, double_formatted(pod_ydotdot), 90, 470);
 				   }
-				   if(ypon.startsWith("ydashdot")){
+				   if(ypon.startsWith("dashdot")){
 					   font.draw(batch, double_formatted(pod_ydashdot), 90, 470);
 				   }
-				   if(ypon.startsWith("ydotdash")){
+				   if(ypon.startsWith("dotdash")){
 					   font.draw(batch, double_formatted(pod_ydotdash), 90, 470);
 				   }
-				   if(ypon.startsWith("ydashdash")){
+				   if(ypon.startsWith("dashdash")){
 					   font.draw(batch, double_formatted(pod_ydashdash), 90, 470);
 				   }
 			   }
@@ -486,7 +485,7 @@ public class GameScreen_2 implements Screen {
     	  seconds+=1;
     	  
     	  if (seconds==2){
-    		  //spawnTutorialDot(-1,-1);
+    		  spawnCartesianDot_vert(0,1);
     	  }
 	   }
 	   
@@ -624,8 +623,8 @@ public class GameScreen_2 implements Screen {
 	   pod_x+=pod_xdot*effective_delta;
 	   pod_y+=pod_ydot*effective_delta;
 	   
-	   System.out.println(pod_x);
-	   System.out.println(pod_y);
+	   //System.out.println(pod_x);
+	   //System.out.println(pod_y);
 	   
 	   if (TOPIC=="NONE" || TOPIC=="CARTESIAN"){
 	   
