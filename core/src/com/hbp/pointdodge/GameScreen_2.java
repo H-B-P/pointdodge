@@ -1,7 +1,7 @@
 package com.hbp.pointdodge;
 
 import java.util.Iterator;
-//import java.math.*;
+import java.math.*;
 //import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -250,6 +250,21 @@ public class GameScreen_2 implements Screen {
 	   return coin*2-1;
    }
    
+   private int tri(){
+	   int coin=MathUtils.random(0,2);
+	   return coin-1;
+   }
+   
+   private float pent(){
+	   int coin=MathUtils.random(0,4);
+	   return ((float)coin-2)/2;
+   }
+   
+   private float sept(){
+	   int coin=MathUtils.random(0,6);
+	   return ((float)coin-3)/2;
+   }
+   
    //--Collisions between geometric shapes. Why is this not already part of libgdx?
    
    private boolean Rectangle_collides_with_Polygon(Rectangle rec, Polygon pol) {
@@ -398,14 +413,14 @@ public class GameScreen_2 implements Screen {
 }
    
    private void spawnCartesianWall_horz(float speed){
-	   spawnCartesianDot_vert(-1.75f,speed);
-	   spawnCartesianDot_vert(-1.25f,speed);
-	   spawnCartesianDot_vert(-0.75f,speed);
-	   spawnCartesianDot_vert(-0.25f,speed);
-	   spawnCartesianDot_vert(0.25f,speed);
-	   spawnCartesianDot_vert(0.75f,speed);
-	   spawnCartesianDot_vert(1.25f,speed);
-	   spawnCartesianDot_vert(1.75f,speed);
+	   spawnCartesianDot_horz(-1.75f,speed);
+	   spawnCartesianDot_horz(-1.25f,speed);
+	   spawnCartesianDot_horz(-0.75f,speed);
+	   spawnCartesianDot_horz(-0.25f,speed);
+	   spawnCartesianDot_horz(0.25f,speed);
+	   spawnCartesianDot_horz(0.75f,speed);
+	   spawnCartesianDot_horz(1.25f,speed);
+	   spawnCartesianDot_horz(1.75f,speed);
 }
    
    private void spawnCartesianGapWall_horz(int gap, float speed){
@@ -564,15 +579,75 @@ public class GameScreen_2 implements Screen {
 		  System.out.println(seconds);
     	  seconds+=1;
     	  
+    	  if (seconds==5){
+    		  spawnCartesianDot_vert(0,-0.4f);
+    	  }
+    	  
+    	  if (seconds==15){
+    		  spawnCartesianDot_horz(Math.round(pod_y),0.8f);
+    	  }
+    	  if (seconds==22){
+    		  spawnCartesianDot_vert(Math.round(pod_x),-0.8f);
+    	  }
+    	  
+    	  if (seconds>30 && seconds<100){
+    		  if (seconds%20==0){
+    			  spawnCartesianDot_horz(Math.round(pod_y*2)/2,-0.8f);
+    		  }
+    		  if (seconds%20==5){
+    			  spawnCartesianDot_vert(Math.round(pod_x*2)/2,-0.8f);
+    			  spawnCartesianDot_vert(pent(),-0.4f);
+    		  }
+    		  if (seconds%20==10){
+    			  spawnCartesianDot_horz(Math.round(pod_y*2)/2,0.8f);
+    		  }
+    		  if (seconds%20==15){
+    			  spawnCartesianDot_vert(Math.round(pod_x*2)/2,0.8f);
+    			  spawnCartesianDot_vert(pent(),0.4f);
+    		  }
+    	  }
+    	  
+    	  if (seconds==110){
+    		  spawnCartesianGapWall_vert(tri(),-0.4f);
+    	  }
+    	  
+    	  if (seconds==120){
+    		  spawnCartesianGapWall_vert(tri(),0.4f);
+    	  }
+    	  
+    	  if (seconds==130){
+    		  int a=tri();
+    		  spawnCartesianGapWall_horz(a,0.4f);
+    		  spawnCartesianGapWall_horz(a,-0.4f);
+    	  }
+    	  
+    	  if (seconds==145){
+    		  spawnCartesianWall_vert(0.4f);
+    	  }
+    	  
+    	  if (seconds==160){
+    		  spawnCartesianWall_horz(0.4f);
+    	  }
+    	  
+    	  if (seconds==175){
+    		  spawnCartesianWall_horz(plusorminus()*0.4f);
+    		  spawnCartesianWall_vert(plusorminus()*0.4f);
+    	  }
+    	  
+    	  if (seconds==190){
+    		  spawnCartesianWall_horz(plusorminus()*0.4f);
+    		  spawnCartesianWall_vert(plusorminus()*0.4f);
+    	  }
+    	  
 //    	  if ((seconds%5)==0){
 //    		  spawnCartesianDot_vert(0,0.4f);
 //    		  spawnCartesianDot_horz(0,0.4f);
 //    	  }
-    	  spawnCartesianSlash_vert(0, 0.2f);
-    	  spawnCartesianSlash_vert(20, 0.2f);
-    	  spawnCartesianSlash_vert(30, 0.2f);
-    	  spawnCartesianSlash_vert(40, 0.2f);
-    	  spawnCartesianSlash_vert(50, 0.2f);
+//    	  spawnCartesianSlash_vert(0, 0.2f);
+//    	  spawnCartesianSlash_vert(20, 0.2f);
+//    	  spawnCartesianSlash_vert(30, 0.2f);
+//    	  spawnCartesianSlash_vert(40, 0.2f);
+//    	  spawnCartesianSlash_vert(50, 0.2f);
 //    	  if (seconds==1){
 //    		  spawnCartesianDot_vert(-1.5f,0.2f);
 //    	  }

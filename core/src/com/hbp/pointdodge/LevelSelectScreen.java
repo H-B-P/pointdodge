@@ -308,7 +308,7 @@ public class LevelSelectScreen implements Screen {
 		
 		arrowsound=Gdx.audio.newSound(Gdx.files.internal("js_sfx/344510__jeremysykes__select03.wav"));
 		hellosound=Gdx.audio.newSound(Gdx.files.internal("js_sfx/344508__jeremysykes__select04.wav"));
-		hellosound.play();
+		//hellosound.play();
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 320, 480);
@@ -414,11 +414,11 @@ public class LevelSelectScreen implements Screen {
 			if (!are_instructions_visible){
 				if (selector_prv_r.contains(tp_x, tp_y) && MINESPEED>50){
 					MINESPEED-=5;
-					arrowsound.play();
+					//arrowsound.play();
 				}
 				if (selector_nxt_r.contains(tp_x, tp_y) && MINESPEED<200){
 					MINESPEED+=5;
-					arrowsound.play();
+					//arrowsound.play();
 				}
 				if (menu_button_r.contains(tp_x, tp_y)){
 					game.setScreen(new MainMenuScreen(game, MINESPEED, ANDROID, true));
