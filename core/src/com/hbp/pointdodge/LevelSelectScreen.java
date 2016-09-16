@@ -425,10 +425,10 @@ public class LevelSelectScreen implements Screen {
 		            dispose();
 				}
 				if (endless_button_r.contains(tp_x, tp_y)){
-					if (MODE=="chill"){
+					if (MODE.equals("chill")){
 						MODE="gen";
 					}
-					else if (MODE=="gen"){
+					else if (MODE.equals("gen")){
 						MODE="chill";
 					}
 				}

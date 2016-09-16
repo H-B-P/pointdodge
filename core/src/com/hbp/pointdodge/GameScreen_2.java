@@ -523,49 +523,50 @@ public class GameScreen_2 implements Screen {
 	   
 	   batch.draw(statusbar_t, 0, 0);
 	   batch.draw(statusbar_t, 0, 400);
-	   
-	   if (TOPIC.equals("CARTESIAN")){
-		   if (LEVEL.startsWith("xdotdotdot")){
-			   font.draw(batch, double_formatted(pod_xdotdotdot), 30, 470);
-			   font.draw(batch, double_formatted(pod_xdotdot), 30, 445);
-			   font.draw(batch, double_formatted(pod_xdot), 30, 420);
-			   if (LEVEL.equals("xdotdotdotydotdotdot")){
-				   font.draw(batch, double_formatted(pod_ydotdotdot), 90, 470);
-				   font.draw(batch, double_formatted(pod_ydotdot), 90, 445);
-				   font.draw(batch, double_formatted(pod_ydot), 90, 420);
+	   if (!HAVE_WE_EXPLODED){
+		   if (TOPIC.equals("CARTESIAN")){
+			   if (LEVEL.startsWith("xdotdotdot")){
+				   font.draw(batch, double_formatted(pod_xdotdotdot), 30, 470);
+				   font.draw(batch, double_formatted(pod_xdotdot), 30, 445);
+				   font.draw(batch, double_formatted(pod_xdot), 30, 420);
+				   if (LEVEL.equals("xdotdotdotydotdotdot")){
+					   font.draw(batch, double_formatted(pod_ydotdotdot), 90, 470);
+					   font.draw(batch, double_formatted(pod_ydotdot), 90, 445);
+					   font.draw(batch, double_formatted(pod_ydot), 90, 420);
+				   }
+				   else{
+					   font.draw(batch, double_formatted(pod_y), 90, 420);
+				   }
 			   }
 			   else{
+				   font.draw(batch, double_formatted(pod_x), 30, 420);
 				   font.draw(batch, double_formatted(pod_y), 90, 420);
-			   }
-		   }
-		   else{
-			   font.draw(batch, double_formatted(pod_x), 30, 420);
-			   font.draw(batch, double_formatted(pod_y), 90, 420);
-			   if(LEVEL.startsWith("xdot")){
-				   font.draw(batch, double_formatted(pod_xdot), 30, 445);
-			   }
-			   if(LEVEL.startsWith("xdotdot")){
-				   font.draw(batch, double_formatted(pod_xdotdot), 30, 470);
-			   }
-			   if (LEVEL.split("y").length>1){
-				   ypon=(LEVEL.split("y"))[1];
-				   if(ypon.startsWith("dot")){
-					   font.draw(batch, double_formatted(pod_ydot), 90, 445);
+				   if(LEVEL.startsWith("xdot")){
+					   font.draw(batch, double_formatted(pod_xdot), 30, 445);
 				   }
-				   if(ypon.startsWith("dash")){
-					   font.draw(batch, double_formatted(pod_ydash), 90, 445);
+				   if(LEVEL.startsWith("xdotdot")){
+					   font.draw(batch, double_formatted(pod_xdotdot), 30, 470);
 				   }
-				   if(ypon.startsWith("dotdot")){
-					   font.draw(batch, double_formatted(pod_ydotdot), 90, 470);
-				   }
-				   if(ypon.startsWith("dashdot")){
-					   font.draw(batch, double_formatted(pod_ydashdot), 90, 470);
-				   }
-				   if(ypon.startsWith("dotdash")){
-					   font.draw(batch, double_formatted(pod_ydotdash), 90, 470);
-				   }
-				   if(ypon.startsWith("dashdash")){
-					   font.draw(batch, double_formatted(pod_ydashdash), 90, 470);
+				   if (LEVEL.split("y").length>1){
+					   ypon=(LEVEL.split("y"))[1];
+					   if(ypon.startsWith("dot")){
+						   font.draw(batch, double_formatted(pod_ydot), 90, 445);
+					   }
+					   if(ypon.startsWith("dash")){
+						   font.draw(batch, double_formatted(pod_ydash), 90, 445);
+					   }
+					   if(ypon.startsWith("dotdot")){
+						   font.draw(batch, double_formatted(pod_ydotdot), 90, 470);
+					   }
+					   if(ypon.startsWith("dashdot")){
+						   font.draw(batch, double_formatted(pod_ydashdot), 90, 470);
+					   }
+					   if(ypon.startsWith("dotdash")){
+						   font.draw(batch, double_formatted(pod_ydotdash), 90, 470);
+					   }
+					   if(ypon.startsWith("dashdash")){
+						   font.draw(batch, double_formatted(pod_ydashdash), 90, 470);
+					   }
 				   }
 			   }
 		   }
@@ -574,114 +575,70 @@ public class GameScreen_2 implements Screen {
 	   font.draw(batch, "Score: "+score, 150, 445);
 	   
 	   batch.end();
-	   
-	   if((seconds+1)<(total_time)){
-		  System.out.println(seconds);
-    	  seconds+=1;
-    	  
-    	  if (seconds==5){
-    		  spawnCartesianDot_vert(0,-0.4f);
-    	  }
-    	  
-    	  if (seconds==15){
-    		  spawnCartesianDot_horz(Math.round(pod_y),0.8f);
-    	  }
-    	  if (seconds==22){
-    		  spawnCartesianDot_vert(Math.round(pod_x),-0.8f);
-    	  }
-    	  
-    	  if (seconds>30 && seconds<100){
-    		  if (seconds%20==0){
-    			  spawnCartesianDot_horz(Math.round(pod_y*2)/2,-0.8f);
-    		  }
-    		  if (seconds%20==5){
-    			  spawnCartesianDot_vert(Math.round(pod_x*2)/2,-0.8f);
-    			  spawnCartesianDot_vert(pent(),-0.4f);
-    		  }
-    		  if (seconds%20==10){
-    			  spawnCartesianDot_horz(Math.round(pod_y*2)/2,0.8f);
-    		  }
-    		  if (seconds%20==15){
-    			  spawnCartesianDot_vert(Math.round(pod_x*2)/2,0.8f);
-    			  spawnCartesianDot_vert(pent(),0.4f);
-    		  }
-    	  }
-    	  
-    	  if (seconds==110){
-    		  spawnCartesianGapWall_vert(tri(),-0.4f);
-    	  }
-    	  
-    	  if (seconds==120){
-    		  spawnCartesianGapWall_vert(tri(),0.4f);
-    	  }
-    	  
-    	  if (seconds==130){
-    		  int a=tri();
-    		  spawnCartesianGapWall_horz(a,0.4f);
-    		  spawnCartesianGapWall_horz(a,-0.4f);
-    	  }
-    	  
-    	  if (seconds==145){
-    		  spawnCartesianWall_vert(0.4f);
-    	  }
-    	  
-    	  if (seconds==160){
-    		  spawnCartesianWall_horz(0.4f);
-    	  }
-    	  
-    	  if (seconds==175){
-    		  spawnCartesianWall_horz(plusorminus()*0.4f);
-    		  spawnCartesianWall_vert(plusorminus()*0.4f);
-    	  }
-    	  
-    	  if (seconds==190){
-    		  spawnCartesianWall_horz(plusorminus()*0.4f);
-    		  spawnCartesianWall_vert(plusorminus()*0.4f);
-    	  }
-    	  
-//    	  if ((seconds%5)==0){
-//    		  spawnCartesianDot_vert(0,0.4f);
-//    		  spawnCartesianDot_horz(0,0.4f);
-//    	  }
-//    	  spawnCartesianSlash_vert(0, 0.2f);
-//    	  spawnCartesianSlash_vert(20, 0.2f);
-//    	  spawnCartesianSlash_vert(30, 0.2f);
-//    	  spawnCartesianSlash_vert(40, 0.2f);
-//    	  spawnCartesianSlash_vert(50, 0.2f);
-//    	  if (seconds==1){
-//    		  spawnCartesianDot_vert(-1.5f,0.2f);
-//    	  }
-//    	  if (seconds==3){
-//    		  spawnCartesianDot_vert(-1.0f,0.2f);
-//    	  }
-//    	  if (seconds==5){
-//    		  spawnCartesianDot_vert(-0.5f,0.2f);
-//    	  }
-//    	  if (seconds==7){
-//    		  spawnCartesianDot_vert(0.0f,0.2f);
-//    	  }
-//    	  if (seconds==9){
-//    		  spawnCartesianDot_vert(0.5f,0.2f);
-//    	  }
-//    	  if (seconds==11){
-//    		  spawnCartesianDot_vert(1.0f,0.2f);
-//    	  }
-//    	  if (seconds==13){
-//    		  spawnCartesianDot_vert(1.5f,0.2f);
-//    	  }
-//    	  if ((seconds%60)==20){
-//    		  spawnCartesianWall_vert(0.2f);
-//    		  spawnCartesianWall_horz(0.2f);
-//    	  }
-//    	  if ((seconds%60)==0){
-//    		  spawnCartesianGapWall_vert(1,-0.2f);
-//    		  spawnCartesianGapWall_horz(1,-0.2f);
-//    	  }
-//    	  if ((seconds%60)==40){
-//    		  spawnCartesianGapWall_vert(0,-0.2f);
-//    	  }
+	   if (MODE.equals("gen")){
+		   if((seconds+1)<(total_time)){
+			  System.out.println(seconds);
+	    	  seconds+=1;
+	    	  
+	    	  if (seconds==5){
+	    		  spawnCartesianDot_vert(0,-0.4f);
+	    	  }
+	    	  
+	    	  if (seconds==15){
+	    		  spawnCartesianDot_horz(Math.round(pod_y),0.8f);
+	    	  }
+	    	  if (seconds==22){
+	    		  spawnCartesianDot_vert(Math.round(pod_x),-0.8f);
+	    	  }
+	    	  
+	    	  if (seconds>30 && seconds<100){
+	    		  if (seconds%10==0){
+	    			  spawnCartesianDot_horz(Math.round(pod_y*2)/2.0f,plusorminus()*0.8f);
+	    		  }
+	    		  if (seconds%10==5){
+	    			  spawnCartesianDot_vert(Math.round(pod_x*2)/2.0f,plusorminus()*0.8f);
+	    			  //spawnCartesianDot_vert(pent(),-0.4f);
+	    		  }
+	    	  }
+	    	  
+	    	  if (seconds==110){
+	    		  spawnCartesianGapWall_horz(tri(),-0.4f);
+	    	  }
+	    	  
+	    	  if (seconds==120){
+	    		  spawnCartesianGapWall_vert(tri(),0.4f);
+	    	  }
+	    	  
+	    	  if (seconds==130){
+	    		  int a=tri();
+	    		  spawnCartesianGapWall_horz(a,0.4f);
+	    		  spawnCartesianGapWall_horz(a,-0.4f);
+	    	  }
+	    	  
+	    	  if (seconds==145){
+	    		  spawnCartesianWall_vert(0.4f);
+	    	  }
+	    	  
+	    	  if (seconds==160){
+	    		  spawnCartesianWall_horz(0.4f);
+	    	  }
+	    	  
+	    	  if (seconds==175){
+	    		  spawnCartesianWall_horz(-0.4f);
+	    		  spawnCartesianWall_vert(plusorminus()*0.4f);
+	    	  }
+	    	  
+	    	  if (seconds==190){
+	    		  spawnCartesianWall_horz(0.4f);
+	    		  spawnCartesianWall_vert(plusorminus()*0.4f);
+	    	  }
+	    	  
+	    	  if (seconds==205){
+	    		  spawnCartesianWall_horz(plusorminus()*0.4f);
+	    		  spawnCartesianWall_vert(plusorminus()*0.4f);
+	    	  }
+		   }
 	   }
-	   
 	   if (Gdx.input.isKeyPressed(Keys.ESCAPE)){
 		   game.setScreen(new LevelSelectScreen(game, "NONE", GAMESPEED, MODE, ANDROID));
 		   dispose();
