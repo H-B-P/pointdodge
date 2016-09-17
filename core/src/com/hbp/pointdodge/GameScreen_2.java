@@ -464,6 +464,76 @@ public class GameScreen_2 implements Screen {
  	  }
    }
    
+   //--Round functions--
+   
+   private void singleRound(int st){
+	   if (seconds==(st+5)){
+ 		  spawnCartesianDot_vert(0,-0.4f);
+ 	  }
+ 	  
+ 	  if (seconds==(st+15)){
+ 		  spawnCartesianDot_horz(Math.round(pod_y),0.8f);
+ 	  }
+ 	  if (seconds==(st+22)){
+ 		  spawnCartesianDot_vert(Math.round(pod_x),-0.8f);
+ 	  }
+ 	  
+ 	  if (seconds>(st+30) && seconds<(st+100)){
+ 		  if (seconds%10==0){
+ 			  spawnCartesianDot_horz(Math.round(pod_y*2)/2.0f,plusorminus()*0.8f);
+ 		  }
+ 		  if (seconds%10==5){
+ 			  spawnCartesianDot_vert(Math.round(pod_x*2)/2.0f,plusorminus()*0.8f);
+ 			  //spawnCartesianDot_vert(pent(),-0.4f);
+ 		  }
+ 	  }
+   }
+   
+   private void gapRound(int st){
+	   if (seconds==(st+10)){
+ 		  spawnCartesianGapWall_vert(tri(),-0.4f);
+ 	  }
+ 	  
+ 	  if (seconds==(st+20)){
+ 		  spawnCartesianGapWall_horz(tri(),0.4f);
+ 	  }
+ 	  
+ 	  if (seconds==(st+30)){
+ 		  int a=tri();
+ 		  spawnCartesianGapWall_vert(a,0.4f);
+ 		  spawnCartesianGapWall_vert(a,-0.4f);
+ 	  }
+   }
+   
+   private void wallRound(int st){
+ 	  if (seconds==(st+5)){
+		  spawnCartesianWall_vert(0.4f);
+	  }
+	  
+	  if (seconds==(st+20)){
+		  spawnCartesianWall_horz(0.4f);
+	  }
+	  
+	  if (seconds==(st+35)){
+		  spawnCartesianWall_vert(0.4f);
+	  }
+	  
+	  if (seconds==(st+50)){
+		  spawnCartesianWall_horz(-0.4f);
+		  spawnCartesianWall_vert(plusorminus()*0.4f);
+	  }
+	  
+	  if (seconds==(st+65)){
+		  spawnCartesianWall_horz(0.4f);
+		  spawnCartesianWall_vert(plusorminus()*0.4f);
+	  }
+	  
+	  if (seconds==(st+80)){
+		  spawnCartesianWall_horz(plusorminus()*0.4f);
+		  spawnCartesianWall_vert(plusorminus()*0.4f);
+	  }
+   }
+   
    private String double_formatted(double doub){
 	   double a=Math.round(doub*10.0)/10.0;
 	   Float b=(Float)(float)a;
@@ -575,68 +645,17 @@ public class GameScreen_2 implements Screen {
 	   font.draw(batch, "Score: "+score, 150, 445);
 	   
 	   batch.end();
-	   if (MODE.equals("gen")){
-		   if((seconds+1)<(total_time)){
-			  System.out.println(seconds);
-	    	  seconds+=1;
-	    	  
-	    	  if (seconds==5){
-	    		  spawnCartesianDot_vert(0,-0.4f);
-	    	  }
-	    	  
-	    	  if (seconds==15){
-	    		  spawnCartesianDot_horz(Math.round(pod_y),0.8f);
-	    	  }
-	    	  if (seconds==22){
-	    		  spawnCartesianDot_vert(Math.round(pod_x),-0.8f);
-	    	  }
-	    	  
-	    	  if (seconds>30 && seconds<100){
-	    		  if (seconds%10==0){
-	    			  spawnCartesianDot_horz(Math.round(pod_y*2)/2.0f,plusorminus()*0.8f);
-	    		  }
-	    		  if (seconds%10==5){
-	    			  spawnCartesianDot_vert(Math.round(pod_x*2)/2.0f,plusorminus()*0.8f);
-	    			  //spawnCartesianDot_vert(pent(),-0.4f);
-	    		  }
-	    	  }
-	    	  
-	    	  if (seconds==110){
-	    		  spawnCartesianGapWall_horz(tri(),-0.4f);
-	    	  }
-	    	  
-	    	  if (seconds==120){
-	    		  spawnCartesianGapWall_vert(tri(),0.4f);
-	    	  }
-	    	  
-	    	  if (seconds==130){
-	    		  int a=tri();
-	    		  spawnCartesianGapWall_horz(a,0.4f);
-	    		  spawnCartesianGapWall_horz(a,-0.4f);
-	    	  }
-	    	  
-	    	  if (seconds==145){
-	    		  spawnCartesianWall_vert(0.4f);
-	    	  }
-	    	  
-	    	  if (seconds==160){
-	    		  spawnCartesianWall_horz(0.4f);
-	    	  }
-	    	  
-	    	  if (seconds==175){
-	    		  spawnCartesianWall_horz(-0.4f);
-	    		  spawnCartesianWall_vert(plusorminus()*0.4f);
-	    	  }
-	    	  
-	    	  if (seconds==190){
-	    		  spawnCartesianWall_horz(0.4f);
-	    		  spawnCartesianWall_vert(plusorminus()*0.4f);
-	    	  }
-	    	  
-	    	  if (seconds==205){
-	    		  spawnCartesianWall_horz(plusorminus()*0.4f);
-	    		  spawnCartesianWall_vert(plusorminus()*0.4f);
-	    	  }
+	   
+	   if((seconds+1)<(total_time)){
+		   System.out.println(seconds);
+		   seconds+=1;
+		   if (MODE.equals("gen")){
+	    	  singleRound(0);
+	    	  gapRound(100);
+	    	  wallRound(140);
+		   }
+		   if (MODE.equals("wall")){
+			   wallRound(0);
 		   }
 	   }
 	   if (Gdx.input.isKeyPressed(Keys.ESCAPE)){
