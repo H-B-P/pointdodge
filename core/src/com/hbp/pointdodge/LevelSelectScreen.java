@@ -414,11 +414,11 @@ public class LevelSelectScreen implements Screen {
 		if ((!ANDROID&&Gdx.input.justTouched())||(ANDROID&&wastouched&&!Gdx.input.isTouched())) {
 			if (!are_instructions_visible){
 				if (selector_prv_r.contains(tp_x, tp_y) && MINESPEED>40){
-					MINESPEED-=10;
+					MINESPEED-=20;
 					//arrowsound.play();
 				}
 				if (selector_nxt_r.contains(tp_x, tp_y) && MINESPEED<500){
-					MINESPEED+=10;
+					MINESPEED+=20;
 					//arrowsound.play();
 				}
 				if (menu_button_r.contains(tp_x, tp_y)){
