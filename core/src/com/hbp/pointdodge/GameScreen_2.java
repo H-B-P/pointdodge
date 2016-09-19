@@ -487,6 +487,23 @@ public class GameScreen_2 implements Screen {
    }
    
    //--Round functions--
+   private float yrand(){
+	   if (LEVEL.contains("ydot")){
+		   return pent();
+	   }
+	   else{
+		   return tri();
+	   }
+   }
+   
+   private float xrand(){
+	   if (LEVEL.contains("xdot")){
+		   return pent();
+	   }
+	   else{
+		   return tri();
+	   }
+   }
    
    private void singleRound(int st){
 	   if (seconds==(st+5)){
@@ -503,41 +520,55 @@ public class GameScreen_2 implements Screen {
  	  if (seconds>=(st+30) && seconds<(st+100)){
  		  if (seconds%10==0){
  			  spawnCartesianDot_horz(Math.round(pod_y*2)/2.0f,plusorminus()*0.8f);
+ 			  spawnCartesianDot_horz(yrand(),plusorminus()*0.4f);
  		  }
  		  if (seconds%10==5){
  			  spawnCartesianDot_vert(Math.round(pod_x*2)/2.0f,plusorminus()*0.8f);
+ 			  spawnCartesianDot_vert(xrand(),plusorminus()*0.4f);
  			  //spawnCartesianDot_vert(pent(),-0.4f);
  		  }
  	  }
    }
    
+   
    private void gapRound(int st){
 	   if (seconds==(st+10)){
- 		  spawnCartesianGapWall_vert(tri(),-0.4f);
+ 		  spawnCartesianGapWall_vert(tri(),0.4f);
  	  }
  	  
  	  if (seconds==(st+20)){
- 		  spawnCartesianGapWall_horz(tri(),0.4f);
+ 		  spawnCartesianGapWall_horz(tri(),plusorminus()*0.4f);
+ 		  spawnCartesianDot_vert(xrand(),plusorminus()*0.4f);
  	  }
  	  
  	  if (seconds==(st+30)){
  		  int a=tri();
  		  spawnCartesianGapWall_vert(a,0.4f);
  		  spawnCartesianGapWall_vert(a,-0.4f);
+ 		 spawnCartesianDot_horz(yrand(),plusorminus()*0.4f);
  	  }
    }
    
    private void wallRound(int st){
  	  if (seconds==(st+5)){
-		  spawnCartesianWall_vert(0.4f);
+		  spawnCartesianWall_vert(-0.4f);
 	  }
 	  
 	  if (seconds==(st+20)){
-		  spawnCartesianWall_horz(0.4f);
+		  spawnCartesianWall_horz(plusorminus()*0.4f);
+	  }
+	  
+	  if (seconds==(st+20)){
+		  spawnCartesianDot_horz(yrand(),plusorminus()*0.8f);
 	  }
 	  
 	  if (seconds==(st+35)){
-		  spawnCartesianWall_vert(0.4f);
+		  spawnCartesianWall_vert(plusorminus()*0.4f);
+	  }
+	  
+	  if (seconds==(st+35)){
+		  spawnCartesianDot_vert(xrand(),0.8f);
+		  spawnCartesianDot_vert(xrand(),-0.8f);
 	  }
 	  
 	  if (seconds==(st+50)){
@@ -553,6 +584,10 @@ public class GameScreen_2 implements Screen {
 	  if (seconds==(st+80)){
 		  spawnCartesianWall_horz(plusorminus()*0.4f);
 		  spawnCartesianWall_vert(plusorminus()*0.4f);
+	  }
+	  if (seconds==(st+80)){
+		  spawnCartesianDot_horz(yrand(),plusorminus()*0.8f);
+		  spawnCartesianDot_vert(xrand(),plusorminus()*0.8f);
 	  }
    }
    
