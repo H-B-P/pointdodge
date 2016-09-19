@@ -180,7 +180,7 @@ public class MainMenuScreen implements Screen {
 		hellosound=Gdx.audio.newSound(Gdx.files.internal("js_sfx/341250__jeremysykes__select01.wav"));
 		arrowsound=Gdx.audio.newSound(Gdx.files.internal("js_sfx/344510__jeremysykes__select03.wav"));
 		if (play_the_sound){
-			hellosound.play();
+			//hellosound.play();
 		}
 	}
 
@@ -272,16 +272,16 @@ public class MainMenuScreen implements Screen {
 			
 				if (ylocus==0 && xlocus==0 && MINESPEED>100){
 					MINESPEED-=5;
-					arrowsound.play();
+					//arrowsound.play();
 				}
 				if (ylocus==0 && xlocus==1 && MINESPEED<400){
 					MINESPEED+=5;
-					arrowsound.play();
+					//arrowsound.play();
 				}
 				
 				if (ylocus==1){
-					game.setScreen(new GameScreen_2(game, MINESPEED, "NONE", "tutorial" , "endless", ANDROID));
-		            dispose();
+					//game.setScreen(new GameScreen_2(game, MINESPEED, "NONE", "tutorial" , "endless", ANDROID));
+		            //dispose();
 				}
 				
 				if (ylocus==2){
@@ -293,7 +293,7 @@ public class MainMenuScreen implements Screen {
 				}
 				
 				if (ylocus==4){
-		            game.setScreen(new LevelSelectScreen(game, "NONE", MINESPEED, "chill", ANDROID));
+		            game.setScreen(new LevelSelectScreen(game, "CARTESIAN_I", MINESPEED, "gen", ANDROID));
 		            dispose();
 				}
 		}

@@ -74,6 +74,7 @@ public class GameScreen_2 implements Screen {
 	
 	private FitViewport viewport;
 	private int GAMESPEED;
+	private int ORI_GAMESPEED;
 	private String TOPIC;
 	private String LEVEL;
 	private String MODE;
@@ -102,7 +103,9 @@ public class GameScreen_2 implements Screen {
 	private SpriteBatch batch;
 	
 	private float total_time;
+	private float asterisk_time;
 	private int seconds;
+	private int explosionseconds;
 	
 	private float[] pp_input;
 	
@@ -119,15 +122,33 @@ public class GameScreen_2 implements Screen {
 	private String ypon;
 	private BitmapFont font;
 	
+	private int hits;
+	
+	private int secondlimit;
+	
    public GameScreen_2(final PointDodge gam, int gamespeed, String topic, String level, String mode, boolean android) {
 	   
 	   GAMESPEED=gamespeed;
+	   ORI_GAMESPEED=gamespeed;
 	   TOPIC=topic;
 	   LEVEL=level;
 	   MODE=mode;
 	   ANDROID=android;
 	 this.game = gam;
-      
+     
+	 
+	 hits=0;
+	 
+	 if (MODE.equals("wall")){
+		 secondlimit=100;
+	 }
+	 else if (MODE.equals("gen")){
+		 secondlimit=240;
+	 }
+	 else{
+		 secondlimit=-1;
+	 }
+	 explosionseconds=0;
 	 dots=new Array<Dot>();
 	 explosions = new Array<Kaboom>();
 	 
@@ -170,7 +191,7 @@ public class GameScreen_2 implements Screen {
 		window_t=new Texture(Gdx.files.internal("window_normal.png"));
 	}
 	
-	if (TOPIC=="CARTESIAN"){
+	if (TOPIC.startsWith("CARTESIAN")){
 		pod_t= new Texture(Gdx.files.internal("cartesian_dodger.png"));
 		grid_t= new Texture(Gdx.files.internal("grid_II.png"));
 	}
@@ -187,7 +208,7 @@ public class GameScreen_2 implements Screen {
 	pod_r.x=pod_x*80+160-20;
 	pod_r.y=pod_y*80+320-20;
 	
-	if (TOPIC=="NONE" || TOPIC=="CARTESIAN"){
+	if (TOPIC=="NONE" || TOPIC.startsWith("CARTESIAN")){
 		pod_r_horz= new Rectangle();
 		pod_r_vert= new Rectangle();
 		pod_r_horzvert= new Rectangle();
@@ -224,6 +245,7 @@ public class GameScreen_2 implements Screen {
     batch = new SpriteBatch();
     
     total_time=0;
+    asterisk_time=0;
     seconds=0;
     
     UNIT_LENGTH_IN_PIXELS=80;
@@ -478,7 +500,7 @@ public class GameScreen_2 implements Screen {
  		  spawnCartesianDot_vert(Math.round(pod_x),-0.8f);
  	  }
  	  
- 	  if (seconds>(st+30) && seconds<(st+100)){
+ 	  if (seconds>=(st+30) && seconds<(st+100)){
  		  if (seconds%10==0){
  			  spawnCartesianDot_horz(Math.round(pod_y*2)/2.0f,plusorminus()*0.8f);
  		  }
@@ -562,18 +584,22 @@ public class GameScreen_2 implements Screen {
 		   //batch.draw(grid_t, 0, 0);
 	   }
 	   
-	   if (HAVE_WE_EXPLODED){
-		   for(Kaboom boom: explosions) {
-			   batch.draw(explosion_t, boom.rect.x-20, boom.rect.y-20);
-		   }
-	   }
-	   else{
+	   if (!HAVE_WE_EXPLODED){
 		   batch.draw(pod_tr, pod_r.x-10, pod_r.y-10, 30, 30, 60, 60, 1, 1, 0);
 		   batch.draw(pod_tr, pod_r_horz.x-10, pod_r_horz.y-10, 30, 30, 60, 60, 1, 1, 0);
 		   batch.draw(pod_tr, pod_r_vert.x-10, pod_r_vert.y-10, 30, 30, 60, 60, 1, 1, 0);
 		   batch.draw(pod_tr, pod_r_horzvert.x-10, pod_r_horzvert.y-10, 30, 30, 60, 60, 1, 1, 0);
 		   
 	   }
+	   if (total_time>asterisk_time+1){
+		   batch.draw(asterisk_t, asterisk_r.x, asterisk_r.y);
+	   }
+	   if (HAVE_WE_EXPLODED){
+		   for(Kaboom boom: explosions) {
+			   batch.draw(explosion_t, boom.rect.x-20, boom.rect.y-20);
+		   }
+	   }
+	   
 	   
 	   batch.draw(poncho_t, -800+160, -1200+240);
 	   batch.draw(window_t, 0, 80);
@@ -587,14 +613,18 @@ public class GameScreen_2 implements Screen {
 		   }
 	   }
 	   
-	   batch.draw(asterisk_t, asterisk_r.x, asterisk_r.y);
+	   if (!HAVE_WE_EXPLODED){
+		   for(Kaboom boom: explosions) {
+			   batch.draw(explosion_t, boom.rect.x-20, boom.rect.y-20);
+		   }
+	   }
 	   
 	   //batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation)
 	   
 	   batch.draw(statusbar_t, 0, 0);
 	   batch.draw(statusbar_t, 0, 400);
 	   if (!HAVE_WE_EXPLODED){
-		   if (TOPIC.equals("CARTESIAN")){
+		   if (TOPIC.startsWith("CARTESIAN")){
 			   if (LEVEL.startsWith("xdotdotdot")){
 				   font.draw(batch, double_formatted(pod_xdotdotdot), 30, 470);
 				   font.draw(batch, double_formatted(pod_xdotdot), 30, 445);
@@ -642,13 +672,18 @@ public class GameScreen_2 implements Screen {
 		   }
 	   }
 	   
-	   font.draw(batch, "Score: "+score, 150, 445);
+	   font.draw(batch, "Score: "+score, 150, 425);
+	   font.draw(batch, "Time: "+seconds, 150, 445);
+	   font.draw(batch, "Hits: "+hits, 150, 465);
 	   
 	   batch.end();
 	   
 	   if((seconds+1)<(total_time)){
 		   System.out.println(seconds);
 		   seconds+=1;
+		   if (HAVE_WE_EXPLODED){
+			   explosionseconds+=1;
+		   }
 		   if (MODE.equals("gen")){
 	    	  singleRound(0);
 	    	  gapRound(100);
@@ -658,8 +693,8 @@ public class GameScreen_2 implements Screen {
 			   wallRound(0);
 		   }
 	   }
-	   if (Gdx.input.isKeyPressed(Keys.ESCAPE)){
-		   game.setScreen(new LevelSelectScreen(game, "NONE", GAMESPEED, MODE, ANDROID));
+	   if (Gdx.input.isKeyPressed(Keys.ESCAPE) || seconds==secondlimit || explosionseconds>2){
+		   game.setScreen(new LevelSelectScreen(game, TOPIC, GAMESPEED, MODE, ANDROID));
 		   dispose();
 	   }
 	   
@@ -686,7 +721,7 @@ public class GameScreen_2 implements Screen {
 		   pod_xdot=input_x;
 		   pod_ydot=input_y;
 	   }
-	   if (TOPIC=="CARTESIAN"){
+	   if (TOPIC.startsWith("CARTESIAN")){
 		   if (LEVEL=="xdotydot"){
 			   pod_xdot=input_x;
 			   pod_ydot=input_y;
@@ -795,7 +830,7 @@ public class GameScreen_2 implements Screen {
 	   //System.out.println(pod_x);
 	   //System.out.println(pod_y);
 	   
-	   if (TOPIC=="NONE" || TOPIC=="CARTESIAN"){
+	   if (TOPIC=="NONE" || TOPIC.startsWith("CARTESIAN")){
 	   
 		   if (pod_x>SHIP_BOUNDARY_DIST){
 			   pod_x-=2*SHIP_BOUNDARY_DIST;
@@ -810,14 +845,11 @@ public class GameScreen_2 implements Screen {
 			   pod_y+=2*SHIP_BOUNDARY_DIST;
 		   }
 		   
-		   
-		   
-		   
 	   }
 	   
 	   pod_r.setCenter(pod_x*UNIT_LENGTH_IN_PIXELS+160, pod_y*UNIT_LENGTH_IN_PIXELS+240);
 	   
-	   if (TOPIC=="NONE" || TOPIC=="CARTESIAN"){
+	   if (TOPIC=="NONE" || TOPIC.startsWith("CARTESIAN")){
 		   pod_r_horz.y=pod_r.y;
 		   pod_r_vert.x=pod_r.x;
 		   if (pod_x<0){
@@ -861,15 +893,19 @@ public class GameScreen_2 implements Screen {
 	     if((dot.rect.x+dot.rect.width/2)>360 || (dot.rect.x+dot.rect.width/2)<-40 || (dot.rect.y+dot.rect.height/2)>420 || (dot.rect.y+dot.rect.height/2)<60) iter.remove();
 	     if(Rectangle_collides_with_Polygon(dot.rect,pod_poly) && !HAVE_WE_EXPLODED){
 	    	 System.out.println("YES");
-	    	 HAVE_WE_EXPLODED=true;
+	    	 System.out.println(dot.rect.x);
+	    	 System.out.println(dot.rect.y);
 	    	 
-	    	 spawnExplosion(pod_r.x,pod_r.y);
+	    	 spawnExplosion(dot.rect.x,dot.rect.y);
+	    	 hits+=1;
+	    	 iter.remove();
 	    	 
-	    	 Iterator<Rectangle> iterdie = pods_r.iterator();
-	    	 while (iterdie.hasNext()){
-	    		 Rectangle a_pod=iterdie.next();
-	    		 spawnExplosion(a_pod.x, a_pod.y);
-	    	 }
+	    	//HAVE_WE_EXPLODED=true;
+	    	 //Iterator<Rectangle> iterdie = pods_r.iterator();
+	    	 //while (iterdie.hasNext()){
+	    	//	 Rectangle a_pod=iterdie.next();
+	    	//	 spawnExplosion(a_pod.x, a_pod.y);
+	    	// }
 	    	 
 	     }
 	     else{
@@ -883,7 +919,10 @@ public class GameScreen_2 implements Screen {
 	  }
 	  
 	  if ((!HAVE_WE_EXPLODED)&&(asterisk_r.overlaps(pod_r) || asterisk_r.overlaps(pod_r_horz) || asterisk_r.overlaps(pod_r_vert) || asterisk_r.overlaps(pod_r_horzvert))){
-		  score+=1;
+		  if ((asterisk_time+1)<total_time){
+			  score+=1;
+			  asterisk_time=total_time;
+		  }
 		  asterisk_r.x+=80*MathUtils.random(1, 2);
 		  asterisk_r.y+=80*MathUtils.random(1, 2);
 		  if (asterisk_r.x>(160-20+80)){
