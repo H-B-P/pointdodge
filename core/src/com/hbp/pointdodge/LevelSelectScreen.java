@@ -375,7 +375,7 @@ public class LevelSelectScreen implements Screen {
 	    game.batch.draw(abutton_corner_t, endless_button_r.x,endless_button_r.y);
 	    font.draw(game.batch, "MENU", menu_button_r.x+35,menu_button_r.y+20);
 	    
-	    font.draw(game.batch, MODE, endless_button_r.x+5,endless_button_r.y+20);
+	    font.draw(game.batch, "MODE: "+MODE, endless_button_r.x+5,endless_button_r.y+20);
 	    
 	    
 	    if (menu_button_r.contains(tp_x,tp_y)){

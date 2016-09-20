@@ -511,15 +511,16 @@ public class GameScreen_2 implements Screen {
  	  }
  	  
  	  if (seconds==(st+15)){
- 		  spawnCartesianDot_horz(Math.round(pod_y),0.8f);
+ 		  spawnCartesianDot_horz(Math.round(pod_y),plusorminus()*0.6f);
  	  }
  	  if (seconds==(st+22)){
- 		  spawnCartesianDot_vert(Math.round(pod_x),-0.8f);
+ 		  spawnCartesianDot_vert(Math.round(pod_x),-0.6f);
  	  }
  	  
  	  if (seconds>=(st+30) && seconds<(st+100)){
  		  if (seconds%10==0){
- 			  spawnCartesianDot_horz(Math.round(pod_y*2)/2.0f,plusorminus()*0.8f);
+ 			  //spawnCartesianDot_horz(Math.round(pod_y*2)/2.0f,Math.copySign(1, pod_x)*1f);
+ 			 spawnCartesianDot_horz(Math.round(pod_y*2)/2.0f,plusorminus()*0.8f);
  			  spawnCartesianDot_horz(yrand(),plusorminus()*0.4f);
  		  }
  		  if (seconds%10==5){
@@ -545,7 +546,7 @@ public class GameScreen_2 implements Screen {
  		  int a=tri();
  		  spawnCartesianGapWall_vert(a,0.4f);
  		  spawnCartesianGapWall_vert(a,-0.4f);
- 		 spawnCartesianDot_horz(yrand(),plusorminus()*0.4f);
+ 		 spawnCartesianDot_horz(plusorminus()*MathUtils.random(1,3),plusorminus()*0.4f);
  	  }
    }
    
@@ -586,7 +587,6 @@ public class GameScreen_2 implements Screen {
 		  spawnCartesianWall_vert(plusorminus()*0.4f);
 	  }
 	  if (seconds==(st+80)){
-		  spawnCartesianDot_horz(yrand(),plusorminus()*0.8f);
 		  spawnCartesianDot_vert(xrand(),plusorminus()*0.8f);
 	  }
    }
@@ -631,7 +631,7 @@ public class GameScreen_2 implements Screen {
 	   }
 	   if (HAVE_WE_EXPLODED){
 		   for(Kaboom boom: explosions) {
-			   batch.draw(explosion_t, boom.rect.x-20, boom.rect.y-20);
+			   batch.draw(explosion_t, boom.rect.x-40, boom.rect.y-40);
 		   }
 	   }
 	   
@@ -650,7 +650,7 @@ public class GameScreen_2 implements Screen {
 	   
 	   if (!HAVE_WE_EXPLODED){
 		   for(Kaboom boom: explosions) {
-			   batch.draw(explosion_t, boom.rect.x-20, boom.rect.y-20);
+			   batch.draw(explosion_t, boom.rect.x-40, boom.rect.y-40);
 		   }
 	   }
 	   
@@ -930,8 +930,7 @@ public class GameScreen_2 implements Screen {
 	    	 System.out.println("YES");
 	    	 System.out.println(dot.rect.x);
 	    	 System.out.println(dot.rect.y);
-	    	 
-	    	 spawnExplosion(dot.rect.x,dot.rect.y);
+	    	 spawnExplosion(dot.rect.x+dot.rect.width/2,dot.rect.y+dot.rect.height/2);
 	    	 hits+=1;
 	    	 iter.remove();
 	    	 
