@@ -31,8 +31,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.Preferences;
 import com.hbp.pointdodge.Kaboom;
 import com.hbp.pointdodge.Dot;
-
-
 public class GameScreen_2 implements Screen {
 	
 	final PointDodge game;
@@ -119,12 +117,16 @@ public class GameScreen_2 implements Screen {
 	
 	private boolean ANDROID;
 	
+	private Rectangle realityBox;
+	
 	private String ypon;
 	private BitmapFont font;
 	
 	private int hits;
 	
 	private int secondlimit;
+	
+	private Rectangle cotestrec;
 	
    public GameScreen_2(final PointDodge gam, int gamespeed, String topic, String level, String mode, boolean android) {
 	   
@@ -151,6 +153,8 @@ public class GameScreen_2 implements Screen {
 	 explosionseconds=0;
 	 dots=new Array<Dot>();
 	 explosions = new Array<Kaboom>();
+	 
+	 cotestrec=new Rectangle();
 	 
 	 dot_t_n=new Texture(Gdx.files.internal("sniperdot.png"));
 	 
@@ -230,6 +234,22 @@ public class GameScreen_2 implements Screen {
 		pods_r.add(pod_r_vert);
 		pods_r.add(pod_r_horzvert);
 	}
+	
+	realityBox=new Rectangle();
+	
+	realityBox.width=320;
+	realityBox.height=320;
+	realityBox.setCenter(160,240);
+	if (TOPIC.startsWith("CARTESIAN")){
+		realityBox.width=240;
+		realityBox.height=240;
+		realityBox.setCenter(160,240);
+	}
+	System.out.println("RB STATS");
+	System.out.println(realityBox.x);
+	System.out.println(realityBox.width);
+	System.out.println(realityBox.height);
+	System.out.println(realityBox.x);
 	
 	pp_input=new float[]{pod_r.x, pod_r.y, pod_r.x+pod_r.width, pod_r.y, pod_r.x+pod_r.width, pod_r.y+pod_r.height, pod_r.x, pod_r.y+pod_r.height};
 	pod_poly= new Polygon(pp_input);
@@ -521,11 +541,15 @@ public class GameScreen_2 implements Screen {
  		  if (seconds%10==0){
  			  //spawnCartesianDot_horz(Math.round(pod_y*2)/2.0f,Math.copySign(1, pod_x)*1f);
  			 spawnCartesianDot_horz(Math.round(pod_y*2)/2.0f,plusorminus()*0.8f);
+ 			 if (!TOPIC.equals("CARTESIAN_III")){
  			  spawnCartesianDot_horz(yrand(),plusorminus()*0.4f);
+ 			 }
  		  }
  		  if (seconds%10==5){
  			  spawnCartesianDot_vert(Math.round(pod_x*2)/2.0f,plusorminus()*0.8f);
+ 			 if (!TOPIC.equals("CARTESIAN_III")){
  			  spawnCartesianDot_vert(xrand(),plusorminus()*0.4f);
+ 			 }
  			  //spawnCartesianDot_vert(pent(),-0.4f);
  		  }
  	  }
@@ -539,15 +563,19 @@ public class GameScreen_2 implements Screen {
  	  
  	  if (seconds==(st+20)){
  		  spawnCartesianGapWall_horz(tri(),plusorminus()*0.4f);
+ 		 if (!TOPIC.equals("CARTESIAN_III")){
  		  spawnCartesianDot_vert(xrand(),plusorminus()*0.4f);
+ 		 }
  	  }
  	  
  	  if (seconds==(st+30)){
  		  int a=tri();
  		  spawnCartesianGapWall_vert(a,0.4f);
  		  spawnCartesianGapWall_vert(a,-0.4f);
- 		 spawnCartesianDot_horz(plusorminus()*MathUtils.random(1,3),plusorminus()*0.4f);
+ 		 if (!TOPIC.equals("CARTESIAN_III")){
+ 		 spawnCartesianDot_horz(plusorminus(),plusorminus()*0.4f);
  	  }
+ 		 }
    }
    
    private void wallRound(int st){
@@ -559,7 +587,7 @@ public class GameScreen_2 implements Screen {
 		  spawnCartesianWall_horz(plusorminus()*0.4f);
 	  }
 	  
-	  if (seconds==(st+20)){
+	  if (seconds==(st+20) &&  !TOPIC.equals("CARTESIAN_III")){
 		  spawnCartesianDot_horz(yrand(),plusorminus()*0.8f);
 	  }
 	  
@@ -567,9 +595,9 @@ public class GameScreen_2 implements Screen {
 		  spawnCartesianWall_vert(plusorminus()*0.4f);
 	  }
 	  
-	  if (seconds==(st+35)){
-		  spawnCartesianDot_vert(xrand(),0.8f);
-		  spawnCartesianDot_vert(xrand(),-0.8f);
+	  if (seconds==(st+35) &&  !TOPIC.equals("CARTESIAN_III")){
+		  spawnCartesianDot_vert(xrand(),0.6f);
+		  spawnCartesianDot_vert(xrand(),-0.6f);
 	  }
 	  
 	  if (seconds==(st+50)){
@@ -586,8 +614,8 @@ public class GameScreen_2 implements Screen {
 		  spawnCartesianWall_horz(plusorminus()*0.4f);
 		  spawnCartesianWall_vert(plusorminus()*0.4f);
 	  }
-	  if (seconds==(st+80)){
-		  spawnCartesianDot_vert(xrand(),plusorminus()*0.8f);
+	  if (seconds==(st+80) && !TOPIC.equals("CARTESIAN_III")){
+		  spawnCartesianDot_vert(xrand(),plusorminus()*0.6f);
 	  }
    }
    
@@ -925,22 +953,25 @@ public class GameScreen_2 implements Screen {
 	     Dot dot = iter.next();
 	     dot.rect.y += dot.vert_speed * effective_delta*UNIT_LENGTH_IN_PIXELS;
 	     dot.rect.x += dot.horz_speed * effective_delta*UNIT_LENGTH_IN_PIXELS;
-	     if((dot.rect.x+dot.rect.width/2)>360 || (dot.rect.x+dot.rect.width/2)<-40 || (dot.rect.y+dot.rect.height/2)>420 || (dot.rect.y+dot.rect.height/2)<60) iter.remove();
-	     if(Rectangle_collides_with_Polygon(dot.rect,pod_poly) && !HAVE_WE_EXPLODED){
-	    	 System.out.println("YES");
-	    	 System.out.println(dot.rect.x);
-	    	 System.out.println(dot.rect.y);
-	    	 spawnExplosion(dot.rect.x+dot.rect.width/2,dot.rect.y+dot.rect.height/2);
-	    	 hits+=1;
-	    	 iter.remove();
-	    	 
-	    	//HAVE_WE_EXPLODED=true;
-	    	 //Iterator<Rectangle> iterdie = pods_r.iterator();
-	    	 //while (iterdie.hasNext()){
-	    	//	 Rectangle a_pod=iterdie.next();
-	    	//	 spawnExplosion(a_pod.x, a_pod.y);
-	    	// }
-	    	 
+	     //if((dot.rect.x+dot.rect.width/2)>360 || (dot.rect.x+dot.rect.width/2)<-40 || (dot.rect.y+dot.rect.height/2)>420 || (dot.rect.y+dot.rect.height/2)<60) iter.remove();
+	     //if(Rectangle_collides_with_Polygon(dot.rect,pod_poly) && !HAVE_WE_EXPLODED && dot.rect.overlaps(realityBox)){
+	     if(!HAVE_WE_EXPLODED && realityBox.overlaps(dot.rect)){
+	    	 Intersector.intersectRectangles(realityBox, dot.rect, cotestrec);
+	    	 if ((pod_r.overlaps(cotestrec)|| pod_r_horz.overlaps(cotestrec) || pod_r_vert.overlaps(cotestrec) ||pod_r_horzvert.overlaps(cotestrec))){
+		    	 System.out.println("YES");
+		    	 System.out.println(dot.rect.x);
+		    	 System.out.println(dot.rect.y);
+		    	 spawnExplosion(dot.rect.x+dot.rect.width/2,dot.rect.y+dot.rect.height/2);
+		    	 hits+=1;
+		    	 iter.remove();
+		    	 
+		    	//HAVE_WE_EXPLODED=true;
+		    	 //Iterator<Rectangle> iterdie = pods_r.iterator();
+		    	 //while (iterdie.hasNext()){
+		    	//	 Rectangle a_pod=iterdie.next();
+		    	//	 spawnExplosion(a_pod.x, a_pod.y);
+		    	// }
+	    	 }
 	     }
 	     else{
 	    	 //System.out.println("NO");

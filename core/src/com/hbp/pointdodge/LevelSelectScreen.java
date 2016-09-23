@@ -112,9 +112,9 @@ public class LevelSelectScreen implements Screen {
 			score_four=prefs.getInteger("score_CARTESIAN_lines");
 			
 			one_t = new Texture(Gdx.files.internal("abutton_xdotydot.png"));
-			two_t = new Texture(Gdx.files.internal("abutton_xdotdotydotdot.png"));
-			three_t = new Texture(Gdx.files.internal("abutton_xy.png"));
-			four_t = new Texture(Gdx.files.internal("abutton_xdotdotydot.png"));
+			two_t = new Texture(Gdx.files.internal("abutton_xy.png"));
+			three_t = new Texture(Gdx.files.internal("abutton_xdotdotydotdot.png"));
+			four_t = new Texture(Gdx.files.internal("abutton_xdoty.png"));
 			
 			TRIM_t=new Texture(Gdx.files.internal("abutton_trim_yellow.png"));
 
@@ -126,10 +126,11 @@ public class LevelSelectScreen implements Screen {
 			score_three=prefs.getInteger("score_CARTESIAN_multiply");
 			score_four=prefs.getInteger("score_CARTESIAN_lines");
 			
-			one_t = new Texture(Gdx.files.internal("abutton_xdoty.png"));
+			one_t = new Texture(Gdx.files.internal("abutton_xdotdotydot.png"));
 			two_t = new Texture(Gdx.files.internal("abutton_xdotdoty.png"));
-			three_t = new Texture(Gdx.files.internal("abutton_xdotdotdoty.png"));
-			four_t = new Texture(Gdx.files.internal("abutton_xdotdotdotydotdotdot.png"));
+			three_t = new Texture(Gdx.files.internal("abutton_xdotydash.png"));
+			four_t = new Texture(Gdx.files.internal("abutton_xdotydashdot.png"));
+			
 			
 			TRIM_t=new Texture(Gdx.files.internal("abutton_trim_yellow.png"));
 
@@ -141,10 +142,10 @@ public class LevelSelectScreen implements Screen {
 			score_three=prefs.getInteger("score_CARTESIAN_multiply");
 			score_four=prefs.getInteger("score_CARTESIAN_lines");
 			
-			one_t = new Texture(Gdx.files.internal("abutton_xdotydash.png"));
-			two_t = new Texture(Gdx.files.internal("abutton_xdotydashdot.png"));
-			three_t = new Texture(Gdx.files.internal("abutton_xdotydotdash.png"));
-			four_t = new Texture(Gdx.files.internal("abutton_xdotydashdash.png"));
+			one_t = new Texture(Gdx.files.internal("abutton_xdotydotdash.png"));
+			two_t = new Texture(Gdx.files.internal("abutton_xdotydashdash.png"));
+			three_t = new Texture(Gdx.files.internal("abutton_xdotdotdoty.png"));
+			four_t = new Texture(Gdx.files.internal("abutton_xdotdotdotydotdotdot.png"));
 			
 			TRIM_t=new Texture(Gdx.files.internal("abutton_trim_yellow.png"));
 
@@ -460,15 +461,15 @@ public class LevelSelectScreen implements Screen {
 						dispose();
 					}
 					if (two_r.contains(tp_x,tp_y)){
-						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_I", "xdotdotydotdot" , MODE, ANDROID));
-						dispose();
-					}
-					if (three_r.contains(tp_x,tp_y)){
 						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_I", "xy" , MODE, ANDROID));
 						dispose();
 					}
+					if (three_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_I", "xdotdotydotdot" , MODE, ANDROID));
+						dispose();
+					}
 					if (four_r.contains(tp_x,tp_y)){
-						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_I", "xdotdotydot" , MODE, ANDROID));
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_I", "xdoty" , MODE, ANDROID));
 						dispose();
 					}
 					if (prv_r.contains(tp_x,tp_y)){
@@ -485,7 +486,7 @@ public class LevelSelectScreen implements Screen {
 				
 				if (TOPIC=="CARTESIAN_II"){
 					if (one_r.contains(tp_x,tp_y)){
-						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_II", "xdoty" , MODE, ANDROID));
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_II", "xdotdotydot" , MODE, ANDROID));
 						dispose();
 					}
 					if (two_r.contains(tp_x,tp_y)){
@@ -493,11 +494,11 @@ public class LevelSelectScreen implements Screen {
 						dispose();
 					}
 					if (three_r.contains(tp_x,tp_y)){
-						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_II", "xdotdotdoty" , MODE, ANDROID));
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_II", "xdotydash" , MODE, ANDROID));
 						dispose();
 					}
 					if (four_r.contains(tp_x,tp_y)){
-						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_II", "xdotdotdotydotdotdot" , MODE, ANDROID));
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_II", "xdotydashdot" , MODE, ANDROID));
 						dispose();
 					}
 					if (prv_r.contains(tp_x,tp_y)){
@@ -513,19 +514,19 @@ public class LevelSelectScreen implements Screen {
 				
 				if (TOPIC=="CARTESIAN_III"){
 					if (one_r.contains(tp_x,tp_y)){
-						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_III", "xdotydash" , MODE, ANDROID));
-						dispose();
-					}
-					if (two_r.contains(tp_x,tp_y)){
-						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_III", "xdotydashdot" , MODE, ANDROID));
-						dispose();
-					}
-					if (three_r.contains(tp_x,tp_y)){
 						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_III", "xdotydotdash" , MODE, ANDROID));
 						dispose();
 					}
-					if (four_r.contains(tp_x,tp_y)){
+					if (two_r.contains(tp_x,tp_y)){
 						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_III", "xdotydashdash" , MODE, ANDROID));
+						dispose();
+					}
+					if (three_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_III", "xdotdotdoty" , MODE, ANDROID));
+						dispose();
+					}
+					if (four_r.contains(tp_x,tp_y)){
+						game.setScreen(new GameScreen_2(game, MINESPEED, "CARTESIAN_III", "xdotdotdotydotdotdot" , MODE, ANDROID));
 						dispose();
 					}
 					if (prv_r.contains(tp_x,tp_y)){
