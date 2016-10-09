@@ -33,6 +33,21 @@ import com.hbp.pointdodge.Kaboom;
 import com.hbp.pointdodge.Dot;
 public class GameScreen_2 implements Screen {
 	
+	private float lr_a;
+	private int lr_a_s;
+	private float lr_b;
+	private int lr_b_s;
+	private float lr_c;
+	private int lr_c_s;
+	private float lr_d;
+	private int lr_d_s;
+	
+	private int rr_a;
+	private float rr_b;
+	private float rr_c;
+	
+	private int mr_a;
+	
 	final PointDodge game;
 	OrthographicCamera camera;
 	private Texture pod_t;
@@ -124,9 +139,15 @@ public class GameScreen_2 implements Screen {
 	
 	private int hits;
 	
+	
+	
 	private int secondlimit;
 	
 	private Rectangle cotestrec;
+	
+	private Preferences prefs;
+	
+	private int prefs_score;
 	
    public GameScreen_2(final PointDodge gam, int gamespeed, String topic, String level, String mode, boolean android) {
 	   
@@ -144,7 +165,7 @@ public class GameScreen_2 implements Screen {
 	 if (MODE.equals("wall")){
 		 secondlimit=100;
 	 }
-	 else if (MODE.equals("gen")){
+	 else if (MODE.equals("gen") || MODE.equals("alt")){
 		 secondlimit=240;
 	 }
 	 else{
@@ -170,6 +191,8 @@ public class GameScreen_2 implements Screen {
 	 
 	 ypon="";
 	 
+	 prefs_score=0;
+	 
 	 pod_x=0;
 	 pod_y=0;
 	 pod_xdot=0;
@@ -186,6 +209,18 @@ public class GameScreen_2 implements Screen {
 	 
 	 score=0;
 	
+	 
+	 
+	 
+	 
+	 
+	 lr_a=0;
+	 lr_b=0;
+	 
+	 
+	 
+	 
+	 
 	 statusbar_t=new Texture(Gdx.files.internal("statusbar.png"));
 	poncho_t= new Texture(Gdx.files.internal("blackbar_poncho.png"));
 	if (TOPIC=="NONE"){
@@ -283,6 +318,8 @@ public class GameScreen_2 implements Screen {
     
     font = new BitmapFont();
     font.setColor(Color.BLACK);
+    
+    prefs = Gdx.app.getPreferences("galen_preferences");
    }
    
    //---FUNCTIONS---
@@ -437,6 +474,26 @@ public class GameScreen_2 implements Screen {
 		   spawnCartesianDot_vert(1.75f,speed);
    }
    
+   private void spawnCartesianHalfWall_vert(float speed, int half){
+	   spawnCartesianDot_vert(half*0.25f,speed);
+	   spawnCartesianDot_vert(half*0.75f,speed);
+	   spawnCartesianDot_vert(half*1.25f,speed);
+	   spawnCartesianDot_vert(half*1.75f,speed);
+}
+   private void spawnCartesianShortHalfWall_vert(float speed, int half){
+	   spawnCartesianDot_vert(half*0.75f,speed);
+	   spawnCartesianDot_vert(half*1.25f,speed);
+	   spawnCartesianDot_vert(half*1.75f,speed);
+}
+
+   private void spawnCartesianLongHalfWall_vert(float speed, int half){
+	   spawnCartesianDot_vert(-half*0.25f,speed);
+	   spawnCartesianDot_vert(half*0.25f,speed);
+	   spawnCartesianDot_vert(half*0.75f,speed);
+	   spawnCartesianDot_vert(half*1.25f,speed);
+	   spawnCartesianDot_vert(half*1.75f,speed);
+   }
+   
    private void spawnCartesianGapWall_vert(int gap, float speed){
 	   spawnCartesianDot_vert(-1.75f,speed);
 	   if (gap!=-1){
@@ -463,6 +520,27 @@ public class GameScreen_2 implements Screen {
 	   spawnCartesianDot_horz(0.75f,speed);
 	   spawnCartesianDot_horz(1.25f,speed);
 	   spawnCartesianDot_horz(1.75f,speed);
+}
+   
+   private void spawnCartesianHalfWall_horz(float speed, int half){
+	   spawnCartesianDot_horz(half*0.25f,speed);
+	   spawnCartesianDot_horz(half*0.75f,speed);
+	   spawnCartesianDot_horz(half*1.25f,speed);
+	   spawnCartesianDot_horz(half*1.75f,speed);
+}
+   
+   private void spawnCartesianShortHalfWall_horz(float speed, int half){
+	   spawnCartesianDot_horz(half*0.75f,speed);
+	   spawnCartesianDot_horz(half*1.25f,speed);
+	   spawnCartesianDot_horz(half*1.75f,speed);
+}
+
+   private void spawnCartesianLongHalfWall_horz(float speed, int half){
+	   spawnCartesianDot_horz(-half*0.25f,speed);
+	   spawnCartesianDot_horz(half*0.25f,speed);
+	   spawnCartesianDot_horz(half*0.75f,speed);
+	   spawnCartesianDot_horz(half*1.25f,speed);
+	   spawnCartesianDot_horz(half*1.75f,speed);
 }
    
    private void spawnCartesianGapWall_horz(int gap, float speed){
@@ -504,6 +582,19 @@ public class GameScreen_2 implements Screen {
 	  if (seconds==(st+12)){
  		  spawnCartesianDot_vert(1.5f,speed);
  	  }
+   }
+   
+
+   private void spawnCartesianLance_vert(int st, int en, float posn, float speed){
+	   if (seconds>=st && seconds<en){
+	 		  spawnCartesianDot_vert(posn,speed);
+	 		  }
+   }
+   
+   private void spawnCartesianLance_horz(int st, int en, float posn, float speed){
+	   if (seconds>=st && seconds<en){
+	 		  spawnCartesianDot_horz(posn,speed);
+	 		  }
    }
    
    //--Round functions--
@@ -554,7 +645,6 @@ public class GameScreen_2 implements Screen {
  		  }
  	  }
    }
-   
    
    private void gapRound(int st){
 	   if (seconds==(st+10)){
@@ -619,6 +709,223 @@ public class GameScreen_2 implements Screen {
 	  }
    }
    
+   private void lanceRound(int st){
+	   if (seconds==st){
+		   lr_a=sept();
+		   lr_b=sept();
+	   }
+	   if (seconds%8==0){
+		   lr_a+=1.0f*MathUtils.random(1,6)/2.0f;
+		   if (lr_a>1.5){
+			   lr_a-=3;
+		   }
+		   lr_a_s=plusorminus();
+		   //lr_a_s=1;
+	   }
+	   if (seconds%8==4){
+		   lr_b+=1.0f*MathUtils.random(1,6)/2.0f;
+		   if (lr_b>1.5){
+			   lr_b-=3;
+		   }
+		   lr_b_s=plusorminus();
+		   //lr_b_s=1;
+	   }
+	   
+	   if (seconds<st+224){
+		   spawnCartesianDot_horz(lr_a, lr_a_s*0.6f);
+		   spawnCartesianDot_vert(lr_b, lr_b_s*0.6f);
+	   }
+   }
+   
+   private void halfRound(int st){
+	   if (seconds<st+225){
+		   if (seconds%6==0){
+			   spawnCartesianHalfWall_vert(plusorminus()*0.5f, plusorminus());
+		   }
+		   
+		   if (seconds%6==3){
+			   spawnCartesianHalfWall_horz(plusorminus()*0.5f, plusorminus());
+		   }
+	   }
+	   
+	   
+   }
+   
+   private void thirdRound(int st){
+	   if (seconds>st && seconds<st+110){
+		   if (seconds%18==0){
+			   spawnCartesianShortHalfWall_vert(plusorminus()*0.5f, plusorminus());
+		   }
+		   
+		   if (seconds%18==3){
+			   spawnCartesianShortHalfWall_horz(plusorminus()*0.5f, plusorminus());
+		   }
+		   if (seconds%18==6){
+			   spawnCartesianLongHalfWall_vert(plusorminus()*0.5f, plusorminus());
+		   }
+		   
+		   if (seconds%18==9){
+			   spawnCartesianShortHalfWall_horz(plusorminus()*0.5f, plusorminus());
+		   }
+		   
+		   if (seconds%18==12){
+			   spawnCartesianShortHalfWall_vert(plusorminus()*0.5f, plusorminus());
+		   }
+		   if (seconds%18==15){
+			   spawnCartesianLongHalfWall_horz(plusorminus()*0.5f, plusorminus());
+		   }
+	   }
+	   
+	   
+   }
+   
+   private void horzGaunt(int st){
+	   if (seconds==st+0){
+		   spawnCartesianGapWall_horz(tri(), -0.6f);
+	   }
+	   if (seconds==st+2){
+		   spawnCartesianWall_horz(0.2f); 
+	   }
+	   if (seconds==st+4){
+		   spawnCartesianGapWall_horz(tri(), -0.6f);
+	   }
+	   if (seconds==st+8){
+		   spawnCartesianGapWall_horz(tri(), -0.6f);
+	   }
+	   if (seconds==st+12){
+		   spawnCartesianGapWall_horz(tri(), -0.6f);
+	   }
+	   if (seconds==st+16){
+		   spawnCartesianGapWall_horz(tri(), -0.6f);
+	   }
+   }
+   
+   private void vertGaunt(int st){
+	   if (seconds==st+0){
+		   spawnCartesianGapWall_vert(tri(), -0.6f);
+	   }
+	   if (seconds==st+2){
+		   spawnCartesianWall_vert(0.2f); 
+	   }
+	   if (seconds==st+4){
+		   spawnCartesianGapWall_vert(tri(), -0.6f);
+	   }
+	   if (seconds==st+8){
+		   spawnCartesianGapWall_vert(tri(), -0.6f);
+	   }
+	   if (seconds==st+12){
+		   spawnCartesianGapWall_vert(tri(), -0.6f);
+	   }
+	   if (seconds==st+16){
+		   spawnCartesianGapWall_vert(tri(), -0.6f);
+	   }
+   }
+   
+   private void gauntletRound(int st){
+
+	   if (seconds==st+4){
+		   spawnCartesianGapWall_horz(tri(), -0.6f);
+	   }
+	   if (seconds==st+8){
+		   spawnCartesianGapWall_horz(tri(), -0.6f);
+	   }
+	   if (seconds==st+12){
+		   spawnCartesianGapWall_horz(tri(), -0.6f);
+	   }
+	   
+	   horzGaunt(st+20);
+	   vertGaunt(st+50);
+	   vertGaunt(st+70);
+	   horzGaunt(st+100);
+	   horzGaunt(st+120);
+	   vertGaunt(st+145);
+	   horzGaunt(st+170);
+   }
+   
+   private void reddishRound(int st){
+	   if (seconds==st+4){
+		   rr_a=tri();
+		   spawnCartesianGapWall_horz(rr_a, 0.5f);
+		   spawnCartesianGapWall_horz(rr_a, -0.5f);
+	   }
+	   
+	   if (seconds==st+14){
+		   rr_a=tri();
+		   spawnCartesianGapWall_vert(rr_a, 0.5f);
+		   spawnCartesianGapWall_vert(rr_a, -0.5f);
+	   }
+	   
+	   
+	   
+	   if (seconds>=(st+24) && seconds<(st+96)){
+		   if (seconds%12==0){
+			   rr_a=tri();
+			   spawnCartesianGapWall_horz(rr_a, 0.5f);
+			   spawnCartesianGapWall_horz(rr_a, -0.5f);
+		   }
+		   if (seconds%12==6){
+			   rr_a=tri();
+			   spawnCartesianGapWall_vert(rr_a, 0.5f);
+			   spawnCartesianGapWall_vert(rr_a, -0.5f);
+		   }
+	   }
+   }
+   
+   private void mismatchRound(int st){
+	   
+	   if (seconds==st+6){
+		   mr_a=plusorminus();
+		   spawnCartesianGapWall_horz(mr_a, 0.5f);
+		   spawnCartesianGapWall_horz(-mr_a, -0.5f);
+	   }
+	   
+	   if (seconds==st+16){
+		   mr_a=plusorminus();
+		   spawnCartesianGapWall_vert(mr_a, 0.5f);
+		   spawnCartesianGapWall_vert(-mr_a, -0.5f);
+	   }
+	   
+	   if (seconds==st+26){
+		   mr_a=plusorminus();
+		   spawnCartesianGapWall_horz(mr_a, 0.5f);
+		   spawnCartesianGapWall_horz(-mr_a, -0.5f);
+	   }
+	   
+	   if (seconds>=(st+35) && seconds<(st+91)){
+		   if (seconds%14==0){
+			   mr_a=plusorminus();
+			   spawnCartesianGapWall_vert(mr_a, 0.5f);
+			   spawnCartesianGapWall_vert(-mr_a, -0.5f);
+		   }
+		   if (seconds%14==7){
+			   mr_a=plusorminus();
+			   spawnCartesianGapWall_horz(mr_a, 0.5f);
+			   spawnCartesianGapWall_horz(-mr_a, -0.5f);
+		   }
+	   }
+   }
+   
+   private void funnelRound(int st){
+	   if (seconds==st+3){
+		   spawnCartesianGapWall_horz(tri(), 0.4f);
+		   spawnCartesianWall_horz(-0.4f);
+	   }
+	   if (seconds==st+13){
+		   spawnCartesianGapWall_vert(tri(), 0.4f);
+		   spawnCartesianWall_vert(-0.4f);
+	   }
+	   if (seconds==st+23){
+		   spawnCartesianGapWall_horz(tri(), -0.4f);
+		   spawnCartesianWall_horz(0.4f);
+	   }
+	   if (seconds==st+33){
+		   spawnCartesianGapWall_vert(tri(), -0.4f);
+		   spawnCartesianWall_vert(0.4f);
+	   }
+   }
+   
+   
+   ///--  --
    private String double_formatted(double doub){
 	   double a=Math.round(doub*10.0)/10.0;
 	   Float b=(Float)(float)a;
@@ -736,7 +1043,7 @@ public class GameScreen_2 implements Screen {
 	   }
 	   
 	   font.draw(batch, "Score: "+score, 150, 425);
-	   font.draw(batch, "Time: "+seconds, 150, 445);
+	   font.draw(batch, "Time: "+(secondlimit-seconds), 150, 445);
 	   font.draw(batch, "Hits: "+hits, 150, 465);
 	   
 	   batch.end();
@@ -747,17 +1054,47 @@ public class GameScreen_2 implements Screen {
 		   if (HAVE_WE_EXPLODED){
 			   explosionseconds+=1;
 		   }
+		   
+		   
+		   if (MODE.equals("lance")){
+			   lanceRound(0);
+		   }
+		   if (MODE.equals("half")){
+			   halfRound(0);
+		   }
 		   if (MODE.equals("gen")){
-	    	  singleRound(0);
+	    	  
+			  singleRound(0);
 	    	  gapRound(100);
 	    	  wallRound(140);
+		   }
+		   if (MODE.equals("alt")){
+			   reddishRound(0);
+			   funnelRound(100);
+			   mismatchRound(140);
 		   }
 		   if (MODE.equals("wall")){
 			   wallRound(0);
 		   }
 	   }
 	   if (Gdx.input.isKeyPressed(Keys.ESCAPE) || seconds==secondlimit || explosionseconds>2){
-		   game.setScreen(new LevelSelectScreen(game, TOPIC, GAMESPEED, MODE, ANDROID));
+		   
+		   if (MODE.equals("gen")){
+			   while (GAMESPEED>20){
+				   prefs_score=prefs.getInteger("score_"+TOPIC+"_"+LEVEL+"_"+GAMESPEED);
+				   System.out.println("score_"+TOPIC+"_"+LEVEL+"_"+GAMESPEED);
+				   if (prefs_score<score){
+					   prefs.putInteger("score_"+TOPIC+"_"+LEVEL+"_"+GAMESPEED, score);
+				   }
+				   GAMESPEED-=10;
+				   System.out.println("GAMESPEED IS "+GAMESPEED);
+			   }
+		   }
+		   prefs.flush();
+		   game.setScreen(new LevelSelectScreen(game, TOPIC, ORI_GAMESPEED, MODE, ANDROID));
+		   
+
+		   
 		   dispose();
 	   }
 	   
